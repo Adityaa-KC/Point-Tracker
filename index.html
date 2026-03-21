@@ -3,95 +3,107 @@
 <head>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0a0e14; color: #e0e6f0; font-family: 'Space Grotesk', sans-serif; min-height: 100vh; }
-  .scanline { position: fixed; top:0;left:0;right:0;bottom:0; background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,128,0.012) 2px,rgba(0,255,128,0.012) 4px); pointer-events:none; z-index:0; }
-  .app { position:relative; z-index:1; max-width:900px; margin:0 auto; padding:0 1rem 3rem; }
-  header { padding:2rem 0 1.5rem; border-bottom:1px solid #1e2d1e; margin-bottom:2rem; display:flex; align-items:center; justify-content:space-between; }
-  .logo { font-family:'JetBrains Mono',monospace; font-size:1.4rem; font-weight:700; color:#00ff88; letter-spacing:-0.5px; }
-  .logo span { color:#ff4d6d; }
-  .event-badge { font-family:'JetBrains Mono',monospace; font-size:11px; background:rgba(0,255,136,0.08); border:1px solid rgba(0,255,136,0.3); color:#00ff88; padding:4px 12px; border-radius:20px; letter-spacing:1px; }
-  .blink { animation:blink 1.2s step-start infinite; }
-  @keyframes blink { 50%{opacity:0;} }
-  .tabs { display:flex; gap:4px; margin-bottom:1.5rem; background:#0d1117; border-radius:10px; padding:4px; border:1px solid #1e2d1e; }
-  .tab { flex:1; padding:10px; border:none; background:transparent; color:#4a6a4a; font-family:'JetBrains Mono',monospace; font-size:13px; border-radius:7px; cursor:pointer; transition:all 0.2s; letter-spacing:0.5px; }
-  .tab.active { background:#0f1e0f; color:#00ff88; border:1px solid rgba(0,255,136,0.25); }
-  .tab:hover:not(.active) { color:#8aaa8a; }
-  .panel { display:none; }
-  .panel.active { display:block; animation:fadeIn 0.25s ease; }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#0a0e14;color:#e0e6f0;font-family:'Space Grotesk',sans-serif;min-height:100vh;}
+  .scanline{position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,128,0.012) 2px,rgba(0,255,128,0.012) 4px);pointer-events:none;z-index:0;}
+  .app{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 1rem 3rem;}
+  header{padding:2rem 0 1.5rem;border-bottom:1px solid #1e2d1e;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;}
+  .logo{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:#00ff88;letter-spacing:-0.5px;}
+  .logo span{color:#ff4d6d;}
+  .event-badge{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);color:#00ff88;padding:4px 12px;border-radius:20px;letter-spacing:1px;}
+  .blink{animation:blink 1.2s step-start infinite;}
+  @keyframes blink{50%{opacity:0;}}
 
-  .terminal-box { background:#0d1117; border:1px solid #1e2d1e; border-radius:12px; padding:1.5rem; margin-bottom:1.25rem; }
-  .terminal-header { display:flex; align-items:center; gap:8px; margin-bottom:1.25rem; padding-bottom:0.75rem; border-bottom:1px solid #1a2a1a; }
-  .dot { width:10px; height:10px; border-radius:50%; }
-  .dot-r{background:#ff5f57;} .dot-y{background:#ffbd2e;} .dot-g{background:#28ca41;}
-  .terminal-title { font-family:'JetBrains Mono',monospace; font-size:12px; color:#4a6a4a; margin-left:auto; }
-  .form-group { margin-bottom:1.25rem; }
-  label { display:block; font-size:12px; color:#4a8a6a; font-family:'JetBrains Mono',monospace; margin-bottom:8px; letter-spacing:0.5px; }
-  .input-wrap { position:relative; }
-  .input-prefix { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-family:'JetBrains Mono',monospace; font-size:14px; color:#00ff88; opacity:0.5; }
-  input[type="text"] { width:100%; background:#070c07; border:1px solid #1e3a1e; color:#e0f0e0; font-family:'JetBrains Mono',monospace; font-size:14px; padding:12px 14px 12px 36px; border-radius:8px; outline:none; transition:border-color 0.2s; }
-  input[type="text"]:focus { border-color:#00ff88; box-shadow:0 0 0 3px rgba(0,255,136,0.08); }
-  input[type="text"]::placeholder { color:#2a4a2a; }
-  .flag-input { padding-left:14px!important; letter-spacing:1px; text-transform:uppercase; }
-  .submit-btn { width:100%; padding:13px; background:linear-gradient(135deg,#00cc6a,#00ff88); border:none; border-radius:8px; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700; color:#030a03; letter-spacing:1px; transition:all 0.2s; margin-top:0.5rem; }
-  .submit-btn:hover { transform:translateY(-1px); box-shadow:0 4px 20px rgba(0,255,136,0.25); }
-  .submit-btn:active { transform:translateY(0); }
-  .toast { padding:12px 16px; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:13px; margin-top:1rem; display:none; align-items:center; gap:10px; }
-  .toast.success { background:rgba(0,255,136,0.08); border:1px solid rgba(0,255,136,0.3); color:#00ff88; display:flex; }
-  .toast.error { background:rgba(255,77,109,0.08); border:1px solid rgba(255,77,109,0.3); color:#ff4d6d; display:flex; }
-  .toast.info { background:rgba(0,150,255,0.08); border:1px solid rgba(0,150,255,0.3); color:#4db8ff; display:flex; }
+  /* CONFIG BANNER */
+  .config-banner{background:rgba(255,180,0,0.08);border:1px solid rgba(255,180,0,0.35);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-family:'JetBrains Mono',monospace;font-size:12px;color:#ffb400;line-height:1.8;}
+  .config-banner strong{color:#ffd060;display:block;margin-bottom:4px;font-size:13px;}
+  .config-banner code{background:rgba(255,180,0,0.1);padding:2px 6px;border-radius:4px;font-size:11px;}
+  .config-banner.hidden{display:none;}
 
-  /* HISTORY BOX — always visible */
-  .history-box { background:#0d1117; border:1px solid #1e2d1e; border-radius:12px; padding:1.25rem; }
-  .history-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; padding-bottom:0.75rem; border-bottom:1px solid #1a2a1a; }
-  .history-title { font-size:12px; color:#4a6a4a; font-family:'JetBrains Mono',monospace; letter-spacing:0.5px; }
-  .history-score { font-family:'JetBrains Mono',monospace; font-size:13px; color:#00ff88; font-weight:700; }
-  .history-score span { color:#2a5a2a; font-weight:400; }
-  .history-list { display:flex; flex-direction:column; gap:6px; }
-  .history-empty { text-align:center; padding:1.5rem; color:#2a4a2a; font-family:'JetBrains Mono',monospace; font-size:12px; border:1px dashed #1a2a1a; border-radius:8px; }
-  .history-item { display:flex; align-items:center; gap:10px; background:#070c07; border:1px solid #1a2a1a; border-radius:6px; padding:10px 12px; animation:slideIn 0.3s ease; }
-  @keyframes slideIn { from{opacity:0;transform:translateX(-8px);} to{opacity:1;transform:translateX(0);} }
-  .hist-flag { font-family:'JetBrains Mono',monospace; font-size:12px; color:#4a8a6a; flex:1; }
-  .hist-pts { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; color:#00ff88; }
-  .hist-time { font-size:11px; color:#2a4a2a; font-family:'JetBrains Mono',monospace; }
+  .tabs{display:flex;gap:4px;margin-bottom:1.5rem;background:#0d1117;border-radius:10px;padding:4px;border:1px solid #1e2d1e;}
+  .tab{flex:1;padding:10px;border:none;background:transparent;color:#4a6a4a;font-family:'JetBrains Mono',monospace;font-size:13px;border-radius:7px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
+  .tab.active{background:#0f1e0f;color:#00ff88;border:1px solid rgba(0,255,136,0.25);}
+  .tab:hover:not(.active){color:#8aaa8a;}
+  .panel{display:none;}
+  .panel.active{display:block;animation:fadeIn 0.25s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
-  /* LEADERBOARD */
-  .lb-header { display:grid; grid-template-columns:48px 1fr auto auto; gap:12px; padding:6px 16px; margin-bottom:6px; font-size:11px; color:#2a4a2a; font-family:'JetBrains Mono',monospace; letter-spacing:0.5px; }
-  .lb-row { display:grid; grid-template-columns:48px 1fr auto auto; gap:12px; align-items:center; background:#0d1117; border:1px solid #1a2a1a; border-radius:10px; padding:14px 16px; margin-bottom:6px; transition:border-color 0.2s,transform 0.15s; animation:slideIn 0.3s ease both; }
-  .lb-row:hover { border-color:#1e3a1e; transform:translateX(2px); }
-  .lb-row.top1 { background:linear-gradient(135deg,#0f1e0f,#0a1a0a); border-color:rgba(0,255,136,0.35); }
-  .lb-row.top2 { border-color:rgba(200,200,255,0.2); }
-  .lb-row.top3 { border-color:rgba(200,150,80,0.2); }
-  .rank { font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700; text-align:center; }
-  .rank-1{color:#00ff88;} .rank-2{color:#c8c8ff;} .rank-3{color:#e8a040;} .rank-n{color:#2a4a2a;}
-  .lb-name { font-size:14px; font-weight:500; color:#c0d8c0; }
-  .lb-flags { font-family:'JetBrains Mono',monospace; font-size:12px; color:#2a5a2a; text-align:center; }
-  .lb-score { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:700; color:#00ff88; text-align:right; }
-  .lb-empty { text-align:center; padding:3rem; color:#2a4a2a; font-family:'JetBrains Mono',monospace; font-size:13px; }
-  .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-  .stat-card { background:#070c07; border:1px solid #1a2a1a; border-radius:8px; padding:14px; text-align:center; }
-  .stat-val { font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:700; color:#00ff88; }
-  .stat-lbl { font-size:11px; color:#2a5a2a; margin-top:4px; font-family:'JetBrains Mono',monospace; }
+  .terminal-box{background:#0d1117;border:1px solid #1e2d1e;border-radius:12px;padding:1.5rem;margin-bottom:1.25rem;}
+  .terminal-header{display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid #1a2a1a;}
+  .dot{width:10px;height:10px;border-radius:50%;}
+  .dot-r{background:#ff5f57;}.dot-y{background:#ffbd2e;}.dot-g{background:#28ca41;}
+  .terminal-title{font-family:'JetBrains Mono',monospace;font-size:12px;color:#4a6a4a;margin-left:auto;}
+  .form-group{margin-bottom:1.25rem;}
+  label{display:block;font-size:12px;color:#4a8a6a;font-family:'JetBrains Mono',monospace;margin-bottom:8px;letter-spacing:0.5px;}
+  input[type="text"]{width:100%;background:#070c07;border:1px solid #1e3a1e;color:#e0f0e0;font-family:'JetBrains Mono',monospace;font-size:14px;padding:12px 14px;border-radius:8px;outline:none;transition:border-color 0.2s;}
+  input[type="text"]:focus{border-color:#00ff88;box-shadow:0 0 0 3px rgba(0,255,136,0.08);}
+  input[type="text"]::placeholder{color:#2a4a2a;}
+  .flag-input{letter-spacing:1px;text-transform:uppercase;}
+  .name-input{padding-left:36px!important;}
+  .input-wrap{position:relative;}
+  .input-prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:14px;color:#00ff88;opacity:0.5;}
+  .submit-btn{width:100%;padding:13px;background:linear-gradient(135deg,#00cc6a,#00ff88);border:none;border-radius:8px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#030a03;letter-spacing:1px;transition:all 0.2s;margin-top:0.5rem;}
+  .submit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,255,136,0.25);}
+  .submit-btn:active{transform:translateY(0);}
+  .submit-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+  .toast{padding:12px 16px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:13px;margin-top:1rem;display:none;align-items:center;gap:10px;}
+  .toast.success{background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);color:#00ff88;display:flex;}
+  .toast.error{background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.3);color:#ff4d6d;display:flex;}
+  .toast.info{background:rgba(0,150,255,0.08);border:1px solid rgba(0,150,255,0.3);color:#4db8ff;display:flex;}
 
-  /* ADMIN */
-  .admin-gate { text-align:center; padding:2rem 0; }
-  .unlock-btn { padding:10px 28px; background:transparent; border:1px solid rgba(0,255,136,0.35); color:#00ff88; font-family:'JetBrains Mono',monospace; font-size:13px; border-radius:7px; cursor:pointer; transition:all 0.2s; }
-  .unlock-btn:hover { background:rgba(0,255,136,0.08); }
-  .admin-section { display:none; }
-  .admin-section.visible { display:block; }
-  .section-label { font-size:12px; color:#4a6a4a; font-family:'JetBrains Mono',monospace; margin-bottom:10px; letter-spacing:0.5px; }
-  .flag-grid { display:flex; flex-direction:column; gap:6px; margin-bottom:1.5rem; }
-  .flag-entry { display:grid; grid-template-columns:1fr 80px 44px; gap:8px; align-items:center; background:#070c07; border:1px solid #1a2a1a; border-radius:8px; padding:10px 12px; }
-  .flag-entry .fe-code { font-family:'JetBrains Mono',monospace; font-size:12px; color:#4a8a6a; }
-  .flag-entry .fe-pts { font-family:'JetBrains Mono',monospace; font-size:13px; color:#00ff88; font-weight:700; }
-  .del-btn { background:transparent; border:1px solid rgba(255,77,109,0.25); color:#ff4d6d; border-radius:5px; cursor:pointer; font-size:14px; height:30px; transition:background 0.2s; }
-  .del-btn:hover { background:rgba(255,77,109,0.08); }
-  .add-flag-form { display:grid; grid-template-columns:1fr 90px auto; gap:8px; align-items:end; margin-bottom:1.5rem; }
-  .add-btn { padding:12px 16px; background:rgba(0,255,136,0.1); border:1px solid rgba(0,255,136,0.3); color:#00ff88; font-family:'JetBrains Mono',monospace; font-size:13px; border-radius:8px; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
-  .add-btn:hover { background:rgba(0,255,136,0.15); }
-  .danger-btn { padding:10px 20px; background:transparent; border:1px solid rgba(255,77,109,0.3); color:#ff4d6d; font-family:'JetBrains Mono',monospace; font-size:12px; border-radius:7px; cursor:pointer; transition:all 0.2s; }
-  .danger-btn:hover { background:rgba(255,77,109,0.08); }
+  .history-box{background:#0d1117;border:1px solid #1e2d1e;border-radius:12px;padding:1.25rem;}
+  .history-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid #1a2a1a;}
+  .history-title{font-size:12px;color:#4a6a4a;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
+  .history-score{font-family:'JetBrains Mono',monospace;font-size:13px;color:#00ff88;font-weight:700;}
+  .history-score span{color:#2a5a2a;font-weight:400;}
+  .history-list{display:flex;flex-direction:column;gap:6px;}
+  .history-empty{text-align:center;padding:1.5rem;color:#2a4a2a;font-family:'JetBrains Mono',monospace;font-size:12px;border:1px dashed #1a2a1a;border-radius:8px;}
+  .history-item{display:flex;align-items:center;gap:10px;background:#070c07;border:1px solid #1a2a1a;border-radius:6px;padding:10px 12px;animation:slideIn 0.3s ease;}
+  @keyframes slideIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
+  .hist-flag{font-family:'JetBrains Mono',monospace;font-size:12px;color:#4a8a6a;flex:1;}
+  .hist-pts{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#00ff88;}
+  .hist-time{font-size:11px;color:#2a4a2a;font-family:'JetBrains Mono',monospace;}
+
+  .lb-header{display:grid;grid-template-columns:48px 1fr auto auto;gap:12px;padding:6px 16px;margin-bottom:6px;font-size:11px;color:#2a4a2a;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
+  .lb-row{display:grid;grid-template-columns:48px 1fr auto auto;gap:12px;align-items:center;background:#0d1117;border:1px solid #1a2a1a;border-radius:10px;padding:14px 16px;margin-bottom:6px;transition:border-color 0.2s,transform 0.15s;}
+  .lb-row:hover{border-color:#1e3a1e;transform:translateX(2px);}
+  .lb-row.top1{background:linear-gradient(135deg,#0f1e0f,#0a1a0a);border-color:rgba(0,255,136,0.35);}
+  .lb-row.top2{border-color:rgba(200,200,255,0.2);}
+  .lb-row.top3{border-color:rgba(200,150,80,0.2);}
+  .rank{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;text-align:center;}
+  .rank-1{color:#00ff88;}.rank-2{color:#c8c8ff;}.rank-3{color:#e8a040;}.rank-n{color:#2a4a2a;}
+  .lb-name{font-size:14px;font-weight:500;color:#c0d8c0;}
+  .lb-flags{font-family:'JetBrains Mono',monospace;font-size:12px;color:#2a5a2a;text-align:center;}
+  .lb-score{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#00ff88;text-align:right;}
+  .lb-empty{text-align:center;padding:3rem;color:#2a4a2a;font-family:'JetBrains Mono',monospace;font-size:13px;}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .stat-card{background:#070c07;border:1px solid #1a2a1a;border-radius:8px;padding:14px;text-align:center;}
+  .stat-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#00ff88;}
+  .stat-lbl{font-size:11px;color:#2a5a2a;margin-top:4px;font-family:'JetBrains Mono',monospace;}
+  .sync-dot{width:8px;height:8px;border-radius:50%;background:#2a4a2a;display:inline-block;margin-right:6px;transition:background 0.3s;}
+  .sync-dot.live{background:#00ff88;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  .sync-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:#2a5a2a;}
+
+  .admin-gate{text-align:center;padding:2rem 0;}
+  .unlock-btn{padding:10px 28px;background:transparent;border:1px solid rgba(0,255,136,0.35);color:#00ff88;font-family:'JetBrains Mono',monospace;font-size:13px;border-radius:7px;cursor:pointer;transition:all 0.2s;}
+  .unlock-btn:hover{background:rgba(0,255,136,0.08);}
+  .admin-section{display:none;}
+  .admin-section.visible{display:block;}
+  .section-label{font-size:12px;color:#4a6a4a;font-family:'JetBrains Mono',monospace;margin-bottom:10px;letter-spacing:0.5px;}
+  .flag-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:1.5rem;}
+  .flag-entry{display:grid;grid-template-columns:1fr 80px 44px;gap:8px;align-items:center;background:#070c07;border:1px solid #1a2a1a;border-radius:8px;padding:10px 12px;}
+  .flag-entry .fe-code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#4a8a6a;}
+  .flag-entry .fe-pts{font-family:'JetBrains Mono',monospace;font-size:13px;color:#00ff88;font-weight:700;}
+  .del-btn{background:transparent;border:1px solid rgba(255,77,109,0.25);color:#ff4d6d;border-radius:5px;cursor:pointer;font-size:14px;height:30px;transition:background 0.2s;}
+  .del-btn:hover{background:rgba(255,77,109,0.08);}
+  .add-flag-form{display:grid;grid-template-columns:1fr 90px auto;gap:8px;align-items:end;margin-bottom:1.5rem;}
+  .add-btn{padding:12px 16px;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:#00ff88;font-family:'JetBrains Mono',monospace;font-size:13px;border-radius:8px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+  .add-btn:hover{background:rgba(0,255,136,0.15);}
+  .danger-btn{padding:10px 20px;background:transparent;border:1px solid rgba(255,77,109,0.3);color:#ff4d6d;font-family:'JetBrains Mono',monospace;font-size:12px;border-radius:7px;cursor:pointer;transition:all 0.2s;}
+  .danger-btn:hover{background:rgba(255,77,109,0.08);}
+  .step{display:flex;gap:10px;margin-bottom:10px;font-size:12px;color:#4a8a6a;font-family:'JetBrains Mono',monospace;line-height:1.7;}
+  .step-num{color:#00ff88;font-weight:700;min-width:18px;}
 </style>
 </head>
 <body>
@@ -99,8 +111,18 @@
 <div class="app">
   <header>
     <div class="logo">FLAG<span>{</span>the_code<span>}</span></div>
-    <div class="event-badge"><span class="blink">●</span> LIVE</div>
+    <div class="event-badge"><span id="syncDot" class="sync-dot"></span><span id="syncLabel" class="sync-label">CONNECTING</span></div>
   </header>
+
+  <!-- FIREBASE CONFIG BANNER -->
+  <div class="config-banner" id="configBanner">
+    <strong>⚠ Firebase not configured — leaderboard won't sync across devices</strong>
+    Replace the config below in your HTML file, then this banner disappears automatically.<br><br>
+    <div class="step"><span class="step-num">1.</span> Go to <code>console.firebase.google.com</code> → New project</div>
+    <div class="step"><span class="step-num">2.</span> Build → Realtime Database → Create database → Start in test mode</div>
+    <div class="step"><span class="step-num">3.</span> Project Settings → Add Web App → Copy the firebaseConfig object</div>
+    <div class="step"><span class="step-num">4.</span> In your HTML file find <code>PASTE_YOUR_FIREBASE_CONFIG_HERE</code> and replace with your config values</div>
+  </div>
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('submit')">Submit Flag</button>
@@ -119,20 +141,16 @@
         <label>// YOUR NAME</label>
         <div class="input-wrap">
           <span class="input-prefix">$</span>
-          <input type="text" id="playerName" placeholder="enter_your_name" autocomplete="off" oninput="onNameChange()" />
+          <input type="text" id="playerName" class="name-input" placeholder="enter_your_name" autocomplete="off" oninput="onNameChange()" />
         </div>
       </div>
       <div class="form-group">
         <label>// FLAG CODE</label>
-        <div class="input-wrap">
-          <input type="text" id="flagInput" class="flag-input" placeholder="FLAG{...}" autocomplete="off" />
-        </div>
+        <input type="text" id="flagInput" class="flag-input" placeholder="FLAG{...}" autocomplete="off" />
       </div>
-      <button class="submit-btn" onclick="submitFlag()">→ SUBMIT FLAG</button>
+      <button class="submit-btn" id="submitBtn" onclick="submitFlag()">→ SUBMIT FLAG</button>
       <div class="toast" id="toast"></div>
     </div>
-
-    <!-- HISTORY — always shown -->
     <div class="history-box">
       <div class="history-top">
         <div class="history-title">// SUBMISSION HISTORY</div>
@@ -146,7 +164,7 @@
 
   <!-- LEADERBOARD PANEL -->
   <div class="panel" id="panel-leaderboard">
-    <div class="terminal-box" style="padding:1rem 1.25rem; margin-bottom:1rem;">
+    <div class="terminal-box" style="padding:1rem 1.25rem;margin-bottom:1rem;">
       <div class="stats-row">
         <div class="stat-card"><div class="stat-val" id="statPlayers">0</div><div class="stat-lbl">PLAYERS</div></div>
         <div class="stat-card"><div class="stat-val" id="statFlagsFound">0</div><div class="stat-lbl">FLAGS FOUND</div></div>
@@ -154,10 +172,8 @@
       </div>
     </div>
     <div class="lb-header">
-      <div style="text-align:center">RANK</div>
-      <div>PLAYER</div>
-      <div style="text-align:center">FLAGS</div>
-      <div style="text-align:right">SCORE</div>
+      <div style="text-align:center">RANK</div><div>PLAYER</div>
+      <div style="text-align:center">FLAGS</div><div style="text-align:right">SCORE</div>
     </div>
     <div id="leaderboard"></div>
   </div>
@@ -167,7 +183,7 @@
     <div class="terminal-box" id="adminGate">
       <div class="admin-gate">
         <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#4a6a4a;">// ADMIN ACCESS REQUIRED</div>
-        <input type="text" id="adminPass" placeholder="enter admin password" style="max-width:240px;display:block;margin:1rem auto;padding-left:14px!important;" />
+        <input type="text" id="adminPass" placeholder="enter admin password" style="max-width:240px;display:block;margin:1rem auto;" />
         <button class="unlock-btn" onclick="unlockAdmin()">UNLOCK</button>
         <div class="toast" id="adminToast" style="max-width:300px;margin:1rem auto;"></div>
       </div>
@@ -177,21 +193,15 @@
         <div class="section-label">// EVENT STATS</div>
         <div class="stats-row">
           <div class="stat-card"><div class="stat-val" id="aStatPlayers">0</div><div class="stat-lbl">PLAYERS</div></div>
-          <div class="stat-card"><div class="stat-val" id="aStatSubmissions">0</div><div class="stat-lbl">SUBMISSIONS</div></div>
+          <div class="stat-card"><div class="stat-val" id="aStatSubs">0</div><div class="stat-lbl">SUBMISSIONS</div></div>
           <div class="stat-card"><div class="stat-val" id="aStatFlags">0</div><div class="stat-lbl">FLAGS ACTIVE</div></div>
         </div>
       </div>
       <div class="terminal-box">
         <div class="section-label">// MANAGE FLAGS</div>
         <div class="add-flag-form">
-          <div>
-            <label>Flag Code</label>
-            <input type="text" id="newFlag" placeholder="FLAG{code_here}" class="flag-input" style="padding-left:14px!important;" />
-          </div>
-          <div>
-            <label>Points</label>
-            <input type="text" id="newPoints" placeholder="100" style="padding-left:14px!important;" />
-          </div>
+          <div><label>Flag Code</label><input type="text" id="newFlag" class="flag-input" placeholder="FLAG{code_here}" /></div>
+          <div><label>Points</label><input type="text" id="newPoints" placeholder="100" /></div>
           <button class="add-btn" onclick="addFlag()">+ ADD</button>
         </div>
         <div class="flag-grid" id="flagGrid"></div>
@@ -207,23 +217,98 @@
   </div>
 </div>
 
-<script>
+<script type="module">
+// ─────────────────────────────────────────────
+//  PASTE YOUR FIREBASE CONFIG HERE
+//  Replace all PASTE_YOUR_... values below
+// ─────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyDctNHWnkY8G4g7K_-zIrtsrp4AmRkjx3w",
+  authDomain: "points-tracker-2f024.firebaseapp.com",
+  databaseURL: "https://points-tracker-2f024-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "points-tracker-2f024",
+  storageBucket: "points-tracker-2f024.firebasestorage.app",
+  messagingSenderId: "683402475231",
+  appId: "1:683402475231:web:0ab91357d452322e0a9b6a",
+  measurementId: "G-NPBS9D4MPZ"
+};
+// ─────────────────────────────────────────────
+
 const ADMIN_PASSWORD = "ftc_admin_2025";
 
-const state = {
-  flags: {
-    "FLAG{FIRST_BUG}": 100,
-    "FLAG{NULL_POINTER}": 150,
-    "FLAG{SQL_INJECT}": 200,
-    "FLAG{XSS_VULN}": 175,
-    "FLAG{RACE_COND}": 250,
-  },
-  players: {},
-  submissions: []
+const DEMO_FLAGS = {
+  "FLAG{FIRST_BUG}": 100,
+  "FLAG{NULL_POINTER}": 150,
+  "FLAG{SQL_INJECT}": 200,
+  "FLAG{XSS_VULN}": 175,
+  "FLAG{RACE_COND}": 250,
 };
 
+let db = null;
+let isFirebaseReady = false;
+let localState = { flags: {...DEMO_FLAGS}, players: {}, submissions: [] };
+
+// detect if config is filled in
+const isConfigured = firebaseConfig.apiKey !== "PASTE_YOUR_API_KEY";
+
+async function initFirebase() {
+  if (!isConfigured) {
+    setSync(false, "LOCAL ONLY");
+    return;
+  }
+  try {
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const { getDatabase, ref, set, get, onValue, update, remove } =
+      await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js");
+
+    const app = initializeApp(firebaseConfig);
+    db = getDatabase(app);
+    window._fb = { ref, set, get, onValue, update, remove };
+
+    // init flags in DB if empty
+    const flagsSnap = await get(ref(db, 'flags'));
+    if (!flagsSnap.exists()) {
+      await set(ref(db, 'flags'), DEMO_FLAGS);
+    }
+
+    // live listeners
+    onValue(ref(db, 'players'), snap => {
+      localState.players = snap.val() || {};
+      renderLeaderboard();
+      const name = document.getElementById('playerName').value.trim().toLowerCase();
+      if (name) renderHistory(name);
+    });
+
+    onValue(ref(db, 'flags'), snap => {
+      localState.flags = snap.val() || {};
+      renderAdmin();
+      updateLbStats();
+    });
+
+    onValue(ref(db, 'submissions'), snap => {
+      const raw = snap.val() || {};
+      localState.submissions = Object.values(raw);
+      updateLbStats();
+    });
+
+    isFirebaseReady = true;
+    setSync(true, "LIVE");
+    document.getElementById('configBanner').classList.add('hidden');
+  } catch(e) {
+    console.error(e);
+    setSync(false, "ERROR");
+  }
+}
+
+function setSync(live, label) {
+  const dot = document.getElementById('syncDot');
+  const lbl = document.getElementById('syncLabel');
+  dot.className = 'sync-dot' + (live ? ' live' : '');
+  lbl.textContent = label;
+}
+
 function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t, i) => {
+  document.querySelectorAll('.tab').forEach((t,i) => {
     t.classList.toggle('active', ['submit','leaderboard','admin'][i] === tab);
   });
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -236,49 +321,54 @@ function showToast(id, msg, type) {
   const el = document.getElementById(id);
   el.className = 'toast ' + type;
   el.innerHTML = (type === 'success' ? '✓ ' : type === 'error' ? '✗ ' : 'ℹ ') + msg;
-  setTimeout(() => { el.style.display = 'none'; el.className = 'toast'; }, 3500);
+  setTimeout(() => { el.style.display='none'; el.className='toast'; }, 3500);
 }
 
 function onNameChange() {
-  const name = document.getElementById('playerName').value.trim().toLowerCase();
-  renderHistory(name);
+  const key = document.getElementById('playerName').value.trim().toLowerCase();
+  renderHistory(key);
 }
 
-function submitFlag() {
+async function submitFlag() {
   const name = document.getElementById('playerName').value.trim();
   const flag = document.getElementById('flagInput').value.trim().toUpperCase();
 
-  if (!name) { showToast('toast', 'Enter your name first', 'error'); return; }
-  if (!flag)  { showToast('toast', 'Enter a flag code', 'error'); return; }
+  if (!name) { showToast('toast','Enter your name first','error'); return; }
+  if (!flag)  { showToast('toast','Enter a flag code','error'); return; }
+  if (!localState.flags[flag]) { showToast('toast','Invalid flag — keep hunting!','error'); return; }
 
-  if (!state.flags[flag]) {
-    showToast('toast', 'Invalid flag — keep hunting!', 'error');
-    return;
+  const key = name.toLowerCase().replace(/[^a-z0-9_]/g,'_');
+  const player = localState.players[key] || { name, score:0, flags:[], flagged:{} };
+
+  if (player.flagged && player.flagged[flag.replace(/[{}]/g,'__')]) {
+    showToast('toast','Already submitted this flag!','info'); return;
   }
 
-  const key = name.toLowerCase();
-  if (!state.players[key]) {
-    state.players[key] = { name, score: 0, flags: [], flagged: {} };
+  const pts = localState.flags[flag];
+  const safeFlag = flag.replace(/[{}]/g,'__');
+
+  if (isFirebaseReady && db) {
+    const { ref, update, set } = window._fb;
+    const existing = localState.players[key];
+    const newScore = (existing ? existing.score : 0) + pts;
+    const newFlagList = [...(existing && existing.flags ? existing.flags : []), flag];
+    const flagged = { ...(existing && existing.flagged ? existing.flagged : {}), [safeFlag]: true };
+
+    await update(ref(db, `players/${key}`), { name, score: newScore, flags: newFlagList, flagged });
+    await set(ref(db, `submissions/${key}_${safeFlag}`), { player: name, flag, pts, time: Date.now() });
+  } else {
+    if (!localState.players[key]) localState.players[key] = { name, score:0, flags:[], flagged:{} };
+    localState.players[key].score += pts;
+    localState.players[key].flags.push(flag);
+    localState.players[key].flagged[safeFlag] = true;
+    localState.submissions.push({ player: name, flag, pts, time: Date.now() });
+    renderLeaderboard();
+    renderHistory(key);
+    updateLbStats();
   }
-
-  const player = state.players[key];
-
-  if (player.flagged[flag]) {
-    showToast('toast', 'Already submitted this flag!', 'info');
-    return;
-  }
-
-  const pts = state.flags[flag];
-  player.score += pts;
-  player.flags.push(flag);
-  player.flagged[flag] = true;
-  state.submissions.push({ player: name, flag, pts, time: Date.now() });
 
   showToast('toast', `+${pts} pts — Flag captured: ${flag}`, 'success');
   document.getElementById('flagInput').value = '';
-
-  renderHistory(key);
-  updateLbStats();
 }
 
 function renderHistory(key) {
@@ -286,14 +376,13 @@ function renderHistory(key) {
   const empty = document.getElementById('historyEmpty');
   const scoreEl = document.getElementById('histScore');
   const scoreVal = document.getElementById('histScoreVal');
+  const player = key ? localState.players[key] : null;
 
-  const player = key ? state.players[key] : null;
+  Array.from(list.querySelectorAll('.history-item')).forEach(e => e.remove());
 
-  if (!player || player.flags.length === 0) {
+  if (!player || !player.flags || player.flags.length === 0) {
     empty.style.display = 'block';
     scoreEl.style.display = 'none';
-    // remove old items but keep empty msg
-    Array.from(list.querySelectorAll('.history-item')).forEach(el => el.remove());
     return;
   }
 
@@ -301,22 +390,19 @@ function renderHistory(key) {
   scoreEl.style.display = 'block';
   scoreVal.textContent = player.score;
 
-  // rebuild list
-  Array.from(list.querySelectorAll('.history-item')).forEach(el => el.remove());
-
   [...player.flags].reverse().forEach(f => {
-    const sub = state.submissions.find(s => s.flag === f && s.player.toLowerCase() === key);
+    const sub = localState.submissions.find(s => s.flag === f && s.player.toLowerCase() === key);
     const timeStr = sub ? new Date(sub.time).toLocaleTimeString() : '';
     const item = document.createElement('div');
     item.className = 'history-item';
-    item.innerHTML = `<span class="hist-flag">${f}</span><span class="hist-pts">+${state.flags[f]}</span><span class="hist-time">${timeStr}</span>`;
+    item.innerHTML = `<span class="hist-flag">${f}</span><span class="hist-pts">+${localState.flags[f] || '?'}</span><span class="hist-time">${timeStr}</span>`;
     list.appendChild(item);
   });
 }
 
 function renderLeaderboard() {
   const lb = document.getElementById('leaderboard');
-  const players = Object.values(state.players).sort((a, b) => b.score - a.score);
+  const players = Object.values(localState.players).sort((a,b) => b.score - a.score);
   updateLbStats();
 
   if (players.length === 0) {
@@ -333,17 +419,19 @@ function renderLeaderboard() {
     const div = document.createElement('div');
     div.className = `lb-row ${rowClass}`;
     div.style.animationDelay = (i * 0.05) + 's';
-    div.innerHTML = `<div class="rank ${rankClass}">#${rank}</div><div class="lb-name">${p.name}${crown}</div><div class="lb-flags">${p.flags.length} flag${p.flags.length !== 1 ? 's' : ''}</div><div class="lb-score">${p.score}</div>`;
+    div.innerHTML = `<div class="rank ${rankClass}">#${rank}</div><div class="lb-name">${p.name}${crown}</div><div class="lb-flags">${(p.flags||[]).length} flag${(p.flags||[]).length!==1?'s':''}</div><div class="lb-score">${p.score}</div>`;
     lb.appendChild(div);
   });
 }
 
 function updateLbStats() {
-  const players = Object.values(state.players);
-  const flagsFound = new Set(state.submissions.map(s => s.flag)).size;
-  document.getElementById('statPlayers').textContent = players.length;
-  document.getElementById('statFlagsFound').textContent = flagsFound;
-  document.getElementById('statTotal').textContent = Object.keys(state.flags).length;
+  const players = Object.values(localState.players);
+  const flagsFound = new Set(localState.submissions.map(s => s.flag)).size;
+  ['statPlayers','aStatPlayers'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=players.length; });
+  const sf = document.getElementById('statFlagsFound'); if(sf) sf.textContent = flagsFound;
+  const st = document.getElementById('statTotal'); if(st) st.textContent = Object.keys(localState.flags).length;
+  const as = document.getElementById('aStatSubs'); if(as) as.textContent = localState.submissions.length;
+  const af = document.getElementById('aStatFlags'); if(af) af.textContent = Object.keys(localState.flags).length;
 }
 
 function unlockAdmin() {
@@ -352,59 +440,89 @@ function unlockAdmin() {
     document.getElementById('adminPanel').classList.add('visible');
     renderAdmin();
   } else {
-    showToast('adminToast', 'Wrong password', 'error');
+    showToast('adminToast','Wrong password','error');
   }
 }
 
 function renderAdmin() {
-  const players = Object.values(state.players);
-  document.getElementById('aStatPlayers').textContent = players.length;
-  document.getElementById('aStatSubmissions').textContent = state.submissions.length;
-  document.getElementById('aStatFlags').textContent = Object.keys(state.flags).length;
-
+  updateLbStats();
   const grid = document.getElementById('flagGrid');
+  if (!grid) return;
   grid.innerHTML = '';
-  Object.entries(state.flags).forEach(([code, pts]) => {
+  Object.entries(localState.flags).forEach(([code, pts]) => {
     const div = document.createElement('div');
     div.className = 'flag-entry';
-    div.innerHTML = `<span class="fe-code">${code}</span><span class="fe-pts">${pts} pts</span><button class="del-btn" onclick="deleteFlag('${code}')">✕</button>`;
+    div.innerHTML = `<span class="fe-code">${code}</span><span class="fe-pts">${pts} pts</span><button class="del-btn" onclick="window._deleteFlag('${code}')">✕</button>`;
     grid.appendChild(div);
   });
 }
 
-function addFlag() {
+async function addFlag() {
   const code = document.getElementById('newFlag').value.trim().toUpperCase();
   const pts = parseInt(document.getElementById('newPoints').value.trim());
   if (!code || isNaN(pts) || pts <= 0) { alert('Enter a valid flag code and points.'); return; }
-  state.flags[code] = pts;
+
+  if (isFirebaseReady && db) {
+    await window._fb.set(window._fb.ref(db, `flags/${code.replace(/[{}]/g,'__')}`), pts);
+  } else {
+    localState.flags[code] = pts;
+    renderAdmin();
+    updateLbStats();
+  }
+
   document.getElementById('newFlag').value = '';
   document.getElementById('newPoints').value = '';
-  renderAdmin();
 }
 
-function deleteFlag(code) {
+async function deleteFlag(code) {
   if (!confirm('Delete flag ' + code + '?')) return;
-  delete state.flags[code];
-  renderAdmin();
+  if (isFirebaseReady && db) {
+    await window._fb.remove(window._fb.ref(db, `flags/${code.replace(/[{}]/g,'__')}`));
+  } else {
+    delete localState.flags[code];
+    renderAdmin();
+  }
 }
 
-function clearLeaderboard() {
+async function clearLeaderboard() {
   if (!confirm('Clear all player data and scores?')) return;
-  state.players = {};
-  state.submissions = [];
-  renderAdmin();
-  document.getElementById('historyList').querySelectorAll('.history-item').forEach(e => e.remove());
-  document.getElementById('historyEmpty').style.display = 'block';
-  document.getElementById('histScore').style.display = 'none';
+  if (isFirebaseReady && db) {
+    await window._fb.set(window._fb.ref(db, 'players'), null);
+    await window._fb.set(window._fb.ref(db, 'submissions'), null);
+  } else {
+    localState.players = {};
+    localState.submissions = [];
+    renderAdmin();
+    renderLeaderboard();
+    document.getElementById('historyList').querySelectorAll('.history-item').forEach(e=>e.remove());
+    document.getElementById('historyEmpty').style.display = 'block';
+    document.getElementById('histScore').style.display = 'none';
+  }
 }
 
-function clearAllData() {
+async function clearAllData() {
   if (!confirm('RESET EVERYTHING? This cannot be undone.')) return;
-  state.players = {};
-  state.submissions = [];
-  renderAdmin();
+  if (isFirebaseReady && db) {
+    await window._fb.set(window._fb.ref(db, 'players'), null);
+    await window._fb.set(window._fb.ref(db, 'submissions'), null);
+  } else {
+    localState.players = {};
+    localState.submissions = [];
+    renderAdmin();
+  }
 }
 
+// expose for inline onclick
+window._deleteFlag = deleteFlag;
+window.addFlag = addFlag;
+window.clearLeaderboard = clearLeaderboard;
+window.clearAllData = clearAllData;
+window.unlockAdmin = unlockAdmin;
+window.submitFlag = submitFlag;
+window.switchTab = switchTab;
+window.onNameChange = onNameChange;
+
+initFirebase();
 updateLbStats();
 </script>
 </body>
