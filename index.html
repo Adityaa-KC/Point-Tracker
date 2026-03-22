@@ -4,14 +4,21 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Flag the Code — 2025</title>
+
+<!--
+  config.js holds Firebase keys + admin UID.
+  - Locally:  fill in config.js yourself (it's in .gitignore so never committed)
+  - On GitHub Pages: GitHub Actions generates config.js from repository secrets
+  Either way, zero secrets ever live inside this file.
+-->
+<script src="config.js"></script>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#0a0e14;color:#e0e6f0;font-family:'Space Grotesk',sans-serif;min-height:100vh;}
 .scanline{position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,128,0.012) 2px,rgba(0,255,128,0.012) 4px);pointer-events:none;z-index:0;}
 .app{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 1rem 3rem;}
-
-/* HEADER */
 header{padding:1.75rem 0 1.25rem;border-bottom:1px solid #1e2d1e;margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 .logo{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#00ff88;letter-spacing:-0.5px;}
 .logo span{color:#ff4d6d;}
@@ -26,28 +33,18 @@ header{padding:1.75rem 0 1.25rem;border-bottom:1px solid #1e2d1e;margin-bottom:1
 .sync-dot.live{background:#00ff88;animation:pulse 2s infinite;}
 .sync-dot.err{background:#ff4d6d;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
-.blink{animation:blink 1.2s step-start infinite;}
-@keyframes blink{50%{opacity:0;}}
-
-/* SCREENS */
 .screen{display:none;}
 .screen.active{display:block;animation:fadeIn 0.3s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-
-/* LOADING */
 #screen-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:1rem;}
 .loader-text{font-family:'JetBrains Mono',monospace;font-size:13px;color:#4a6a4a;}
 .loader-bar{width:200px;height:2px;background:#1a2a1a;border-radius:2px;overflow:hidden;}
 .loader-fill{height:100%;background:#00ff88;border-radius:2px;animation:load 1.5s ease-in-out infinite;}
 @keyframes load{0%{width:0;margin-left:0;}50%{width:60%;margin-left:20%;}100%{width:0;margin-left:100%;}}
-
-/* AUTH */
 .auth-wrap{max-width:420px;margin:1.5rem auto 0;}
 .auth-toggle{display:flex;gap:4px;margin-bottom:1.5rem;background:#0d1117;border-radius:10px;padding:4px;border:1px solid #1e2d1e;}
 .auth-tab{flex:1;padding:9px;border:none;background:transparent;color:#4a6a4a;font-family:'JetBrains Mono',monospace;font-size:12px;border-radius:7px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
 .auth-tab.active{background:#0f1e0f;color:#00ff88;border:1px solid rgba(0,255,136,0.25);}
-
-/* COMMON COMPONENTS */
 .terminal-box{background:#0d1117;border:1px solid #1e2d1e;border-radius:12px;padding:1.5rem;margin-bottom:1.25rem;}
 .terminal-header{display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid #1a2a1a;}
 .dot{width:10px;height:10px;border-radius:50%;}
@@ -55,8 +52,8 @@ header{padding:1.75rem 0 1.25rem;border-bottom:1px solid #1e2d1e;margin-bottom:1
 .terminal-title{font-family:'JetBrains Mono',monospace;font-size:12px;color:#4a6a4a;margin-left:auto;}
 .form-group{margin-bottom:1.1rem;}
 label{display:block;font-size:12px;color:#4a8a6a;font-family:'JetBrains Mono',monospace;margin-bottom:7px;letter-spacing:0.5px;}
-input[type="text"],input[type="password"]{width:100%;background:#070c07;border:1px solid #1e3a1e;color:#e0f0e0;font-family:'JetBrains Mono',monospace;font-size:14px;padding:11px 14px;border-radius:8px;outline:none;transition:border-color 0.2s;}
-input[type="text"]:focus,input[type="password"]:focus{border-color:#00ff88;box-shadow:0 0 0 3px rgba(0,255,136,0.08);}
+input[type="text"],input[type="password"],input[type="email"]{width:100%;background:#070c07;border:1px solid #1e3a1e;color:#e0f0e0;font-family:'JetBrains Mono',monospace;font-size:14px;padding:11px 14px;border-radius:8px;outline:none;transition:border-color 0.2s;}
+input:focus{border-color:#00ff88;box-shadow:0 0 0 3px rgba(0,255,136,0.08);}
 input::placeholder{color:#2a4a2a;}
 .flag-input{letter-spacing:1px;text-transform:uppercase;}
 .primary-btn{width:100%;padding:12px;background:linear-gradient(135deg,#00cc6a,#00ff88);border:none;border-radius:8px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#030a03;letter-spacing:1px;transition:all 0.2s;margin-top:0.25rem;}
@@ -67,22 +64,16 @@ input::placeholder{color:#2a4a2a;}
 .toast.success{background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);color:#00ff88;display:flex;}
 .toast.error{background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.3);color:#ff4d6d;display:flex;}
 .toast.info{background:rgba(0,150,255,0.08);border:1px solid rgba(0,150,255,0.3);color:#4db8ff;display:flex;}
-
-/* TABS */
 .tabs{display:flex;gap:4px;margin-bottom:1.5rem;background:#0d1117;border-radius:10px;padding:4px;border:1px solid #1e2d1e;}
 .tab{flex:1;padding:10px;border:none;background:transparent;color:#4a6a4a;font-family:'JetBrains Mono',monospace;font-size:12px;border-radius:7px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
 .tab.active{background:#0f1e0f;color:#00ff88;border:1px solid rgba(0,255,136,0.25);}
 .tab:hover:not(.active){color:#8aaa8a;}
 .panel{display:none;}
 .panel.active{display:block;animation:fadeIn 0.25s ease;}
-
-/* SCORE BANNER */
 .score-banner{background:#070c07;border:1px solid rgba(0,255,136,0.15);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;}
 .score-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:#2a5a2a;margin-bottom:4px;}
 .score-val{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:#00ff88;}
 .score-flags{font-family:'JetBrains Mono',monospace;font-size:11px;color:#2a5a2a;text-align:right;}
-
-/* HISTORY */
 .history-box{background:#0d1117;border:1px solid #1e2d1e;border-radius:12px;padding:1.25rem;}
 .history-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid #1a2a1a;}
 .history-title{font-size:12px;color:#4a6a4a;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
@@ -93,8 +84,6 @@ input::placeholder{color:#2a4a2a;}
 .hist-flag{font-family:'JetBrains Mono',monospace;font-size:12px;color:#4a8a6a;flex:1;word-break:break-all;}
 .hist-pts{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#00ff88;white-space:nowrap;}
 .hist-time{font-size:11px;color:#2a4a2a;font-family:'JetBrains Mono',monospace;white-space:nowrap;}
-
-/* LEADERBOARD */
 .lb-header{display:grid;grid-template-columns:44px 1fr 60px 70px;gap:8px;padding:6px 14px;margin-bottom:6px;font-size:11px;color:#2a4a2a;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
 .lb-row{display:grid;grid-template-columns:44px 1fr 60px 70px;gap:8px;align-items:center;background:#0d1117;border:1px solid #1a2a1a;border-radius:10px;padding:13px 14px;margin-bottom:6px;transition:border-color 0.2s,transform 0.15s;}
 .lb-row:hover{border-color:#1e3a1e;transform:translateX(2px);}
@@ -111,8 +100,6 @@ input::placeholder{color:#2a4a2a;}
 .stat-card{background:#070c07;border:1px solid #1a2a1a;border-radius:8px;padding:14px;text-align:center;}
 .stat-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#00ff88;}
 .stat-lbl{font-size:11px;color:#2a5a2a;margin-top:4px;font-family:'JetBrains Mono',monospace;}
-
-/* ADMIN */
 .section-label{font-size:12px;color:#4a6a4a;font-family:'JetBrains Mono',monospace;margin-bottom:10px;letter-spacing:0.5px;}
 .flag-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:1.5rem;}
 .flag-entry{display:grid;grid-template-columns:1fr 80px 44px;gap:8px;align-items:center;background:#070c07;border:1px solid #1a2a1a;border-radius:8px;padding:10px 12px;}
@@ -125,7 +112,7 @@ input::placeholder{color:#2a4a2a;}
 .add-btn:hover{background:rgba(0,255,136,0.15);}
 .danger-btn{padding:10px 20px;background:transparent;border:1px solid rgba(255,77,109,0.3);color:#ff4d6d;font-family:'JetBrains Mono',monospace;font-size:12px;border-radius:7px;cursor:pointer;transition:all 0.2s;margin-right:8px;margin-bottom:8px;}
 .danger-btn:hover{background:rgba(255,77,109,0.08);}
-
+.hint-text{font-family:'JetBrains Mono',monospace;font-size:11px;color:#2a4a2a;margin-top:1rem;line-height:1.7;}
 @media(max-width:500px){
   .lb-header,.lb-row{grid-template-columns:36px 1fr 50px;}
   .lb-header div:last-child,.lb-row .lb-score{display:none;}
@@ -158,6 +145,18 @@ input::placeholder{color:#2a4a2a;}
     <div class="loader-bar"><div class="loader-fill"></div></div>
   </div>
 
+  <!-- CONFIG MISSING ERROR -->
+  <div class="screen" id="screen-config-error">
+    <div style="max-width:480px;margin:3rem auto;font-family:'JetBrains Mono',monospace;">
+      <div style="font-size:1rem;color:#ff4d6d;margin-bottom:1rem;">✗ config.js not found or incomplete</div>
+      <div style="font-size:12px;color:#4a6a4a;line-height:2;">
+        1. Open <span style="color:#00ff88;">config.js</span> in this folder<br/>
+        2. Fill in your Firebase values and admin UID<br/>
+        3. Save and refresh the page
+      </div>
+    </div>
+  </div>
+
   <!-- AUTH -->
   <div class="screen" id="screen-auth">
     <div style="text-align:center;margin-bottom:1.5rem;">
@@ -166,12 +165,11 @@ input::placeholder{color:#2a4a2a;}
     </div>
     <div class="auth-wrap">
       <div class="auth-toggle">
-        <button class="auth-tab active" id="atab-login" onclick="switchAuthTab('login')">Login</button>
-        <button class="auth-tab" id="atab-register" onclick="switchAuthTab('register')">Register</button>
-        <button class="auth-tab" id="atab-admin" onclick="switchAuthTab('admin')">Admin</button>
+        <button class="auth-tab active" id="atab-login"    onclick="switchAuthTab('login')">Login</button>
+        <button class="auth-tab"        id="atab-register" onclick="switchAuthTab('register')">Register</button>
+        <button class="auth-tab"        id="atab-admin"    onclick="switchAuthTab('admin')">Admin</button>
       </div>
 
-      <!-- LOGIN -->
       <div id="aform-login">
         <div class="terminal-box">
           <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-title">login.sh</span></div>
@@ -182,7 +180,6 @@ input::placeholder{color:#2a4a2a;}
         </div>
       </div>
 
-      <!-- REGISTER -->
       <div id="aform-register" style="display:none;">
         <div class="terminal-box">
           <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-title">register.sh</span></div>
@@ -194,13 +191,17 @@ input::placeholder{color:#2a4a2a;}
         </div>
       </div>
 
-      <!-- ADMIN LOGIN -->
+      <!-- Admin login uses Firebase Authentication.
+           The password is verified by Firebase servers.
+           It is never stored anywhere in this codebase. -->
       <div id="aform-admin" style="display:none;">
         <div class="terminal-box">
           <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-title">admin_access.sh</span></div>
+          <div class="form-group"><label>// ADMIN EMAIL</label><input type="email" id="admin-email" placeholder="admin@yourevent.com" autocomplete="off"/></div>
           <div class="form-group"><label>// ADMIN PASSWORD</label><input type="password" id="admin-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()"/></div>
-          <button class="primary-btn" onclick="doAdminLogin()">→ ADMIN LOGIN</button>
+          <button class="primary-btn" id="admin-btn" onclick="doAdminLogin()">→ ADMIN LOGIN</button>
           <div class="toast" id="admin-auth-toast"></div>
+          <div class="hint-text">// verified by Firebase Auth — not stored in this codebase</div>
         </div>
       </div>
     </div>
@@ -209,29 +210,23 @@ input::placeholder{color:#2a4a2a;}
   <!-- STUDENT SCREEN -->
   <div class="screen" id="screen-student">
     <div class="tabs">
-      <button class="tab active" id="stab-submit" onclick="switchTab('submit','s')">Submit Flag</button>
-      <button class="tab" id="stab-history" onclick="switchTab('history','s')">My Submissions</button>
+      <button class="tab active" id="stab-submit"  onclick="switchTab('submit','s')">Submit Flag</button>
+      <button class="tab"        id="stab-history" onclick="switchTab('history','s')">My Submissions</button>
     </div>
-
     <div class="panel active" id="spanel-submit">
       <div class="score-banner">
-        <div>
-          <div class="score-label">// YOUR SCORE</div>
-          <div class="score-val" id="s-score">0</div>
-        </div>
+        <div><div class="score-label">// YOUR SCORE</div><div class="score-val" id="s-score">0</div></div>
         <div class="score-flags" id="s-flagcount">0 flags captured</div>
       </div>
       <div class="terminal-box">
         <div class="terminal-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-title">flag_submission.sh</span></div>
-        <div class="form-group" style="margin-bottom:0.75rem;">
-          <label>// FLAG CODE</label>
+        <div class="form-group" style="margin-bottom:0.75rem;"><label>// FLAG CODE</label>
           <input type="text" id="flagInput" class="flag-input" placeholder="FLAG{...}" autocomplete="off" onkeydown="if(event.key==='Enter')submitFlag()"/>
         </div>
         <button class="primary-btn" id="submit-btn" onclick="submitFlag()">→ SUBMIT FLAG</button>
         <div class="toast" id="submit-toast"></div>
       </div>
     </div>
-
     <div class="panel" id="spanel-history">
       <div class="history-box">
         <div class="history-top">
@@ -248,12 +243,11 @@ input::placeholder{color:#2a4a2a;}
   <!-- ADMIN SCREEN -->
   <div class="screen" id="screen-admin">
     <div class="tabs">
-      <button class="tab active" id="atab-lb" onclick="switchTab('lb','a')">Leaderboard</button>
-      <button class="tab" id="atab-flags" onclick="switchTab('flags','a')">Manage Flags</button>
-      <button class="tab" id="atab-users" onclick="switchTab('users','a')">Users</button>
-      <button class="tab" id="atab-danger" onclick="switchTab('danger','a')">Danger Zone</button>
+      <button class="tab active" id="atab-lb"     onclick="switchTab('lb','a')">Leaderboard</button>
+      <button class="tab"        id="atab-flags"  onclick="switchTab('flags','a')">Manage Flags</button>
+      <button class="tab"        id="atab-users"  onclick="switchTab('users','a')">Users</button>
+      <button class="tab"        id="atab-danger" onclick="switchTab('danger','a')">Danger Zone</button>
     </div>
-
     <div class="panel active" id="apanel-lb">
       <div class="terminal-box" style="padding:1rem 1.25rem;margin-bottom:1rem;">
         <div class="stats-row">
@@ -262,13 +256,9 @@ input::placeholder{color:#2a4a2a;}
           <div class="stat-card"><div class="stat-val" id="stat-total">0</div><div class="stat-lbl">TOTAL FLAGS</div></div>
         </div>
       </div>
-      <div class="lb-header">
-        <div style="text-align:center">RANK</div><div>PLAYER</div>
-        <div style="text-align:center">FLAGS</div><div style="text-align:right">SCORE</div>
-      </div>
+      <div class="lb-header"><div style="text-align:center">RANK</div><div>PLAYER</div><div style="text-align:center">FLAGS</div><div style="text-align:right">SCORE</div></div>
       <div id="leaderboard"></div>
     </div>
-
     <div class="panel" id="apanel-flags">
       <div class="terminal-box">
         <div class="section-label">// ADD NEW FLAG</div>
@@ -281,14 +271,12 @@ input::placeholder{color:#2a4a2a;}
         <div class="flag-grid" id="flagGrid"></div>
       </div>
     </div>
-
     <div class="panel" id="apanel-users">
       <div class="terminal-box">
         <div class="section-label">// REGISTERED USERS</div>
         <div id="userList" style="display:flex;flex-direction:column;gap:6px;"></div>
       </div>
     </div>
-
     <div class="panel" id="apanel-danger">
       <div class="terminal-box">
         <div class="section-label">// DANGER ZONE</div>
@@ -301,84 +289,59 @@ input::placeholder{color:#2a4a2a;}
 </div>
 
 <script type="module">
-// ════════════════════════════════════════════
-//  FIREBASE CONFIG — injected by GitHub Actions
-//  Do NOT paste keys here directly.
-//  Add them as GitHub Secrets and the workflow
-//  will replace these placeholders at build time.
-// ════════════════════════════════════════════
-const firebaseConfig = {
-  apiKey: "AIzaSyDctNHWnkY8G4g7K_-zIrtsrp4AmRkjx3w",
-  authDomain: "points-tracker-2f024.firebaseapp.com",
-  databaseURL: "https://points-tracker-2f024-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "points-tracker-2f024",
-  storageBucket: "points-tracker-2f024.firebasestorage.app",
-  messagingSenderId: "683402475231",
-  appId: "1:683402475231:web:0ab91357d452322e0a9b6a",
-  measurementId: "G-NPBS9D4MPZ"
-};
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut as fbSignOut }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, set, get, update, remove, onValue, push }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// ════════════════════════════════════════════
-//  ADMIN PASSWORD — also injected by workflow
-// ════════════════════════════════════════════
-const ADMIN_PASSWORD = "ftc_admin_2025";
+// ── Read config injected by config.js ────────────
+const CFG = window.__FTC_CONFIG__;
 
-// ════════════════════════════════════════════
-//  DEFAULT FLAGS (seeded into DB if empty)
-// ════════════════════════════════════════════
+if (!CFG || !CFG.firebase || CFG.firebase.apiKey === 'YOUR_API_KEY') {
+  showScreen('config-error');
+  throw new Error('config.js not configured');
+}
+
+const firebaseConfig = CFG.firebase;
+const ADMIN_UID      = CFG.adminUid;
+
 const DEFAULT_FLAGS = {
-  "FLAG{FIRST_BUG}":   100,
-  "FLAG{NULL_POINTER}":150,
-  "FLAG{SQL_INJECT}":  200,
-  "FLAG{XSS_VULN}":    175,
-  "FLAG{RACE_COND}":   250,
+  "FLAG{FIRST_BUG}":    100,
+  "FLAG{NULL_POINTER}": 150,
+  "FLAG{SQL_INJECT}":   200,
+  "FLAG{XSS_VULN}":     175,
+  "FLAG{RACE_COND}":    250,
 };
 
-// ── Firebase SDK ──
-import { initializeApp }                            from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, get, update,
-         remove, onValue, push, serverTimestamp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-let db, session = null;
-
-// ── State cache (kept in sync by onValue listeners) ──
+let db, auth, session = null;
 let cache = { flags:{}, players:{}, submissions:[] };
 
-// ══════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════
+// ── INIT ─────────────────────────────────────────
 async function init() {
   try {
     const app = initializeApp(firebaseConfig);
-    db = getDatabase(app);
+    db   = getDatabase(app);
+    auth = getAuth(app);
 
-    // Seed default flags if DB is empty
     const flagSnap = await get(ref(db,'flags'));
-    if (!flagSnap.exists()) {
-      await set(ref(db,'flags'), DEFAULT_FLAGS);
-    }
+    if (!flagSnap.exists()) await set(ref(db,'flags'), DEFAULT_FLAGS);
 
-    // ── Real-time listeners ──
-    // Flags
+    // Real-time listeners — active for the lifetime of the page
     onValue(ref(db,'flags'), snap => {
       cache.flags = snap.val() || {};
       if (isAdmin()) renderFlagGrid();
       updateStats();
     });
-
-    // Players — updates score banner + leaderboard live
     onValue(ref(db,'players'), snap => {
       cache.players = snap.val() || {};
       if (session && !isAdmin()) refreshStudentBanner();
       if (isAdmin()) renderLeaderboard();
       updateStats();
     });
-
-    // Submissions — updates history live on all devices
     onValue(ref(db,'submissions'), snap => {
-      const raw = snap.val() || {};
-      cache.submissions = Object.values(raw);
-      if (session && !isAdmin()) renderStudentHistory();
+      cache.submissions = Object.values(snap.val() || {});
       updateStats();
     });
 
@@ -387,289 +350,214 @@ async function init() {
   } catch(e) {
     console.error(e);
     setSyncStatus(false);
-    // Still show auth so user knows something is wrong
     showScreen('auth');
   }
 }
 
-// ══════════════════════════════════════
-//  SYNC STATUS
-// ══════════════════════════════════════
 function setSyncStatus(ok) {
-  const dot = document.getElementById('syncDot');
-  const lbl = document.getElementById('syncLabel');
-  dot.className = 'sync-dot' + (ok ? ' live' : ' err');
-  lbl.textContent = ok ? 'LIVE' : 'OFFLINE';
+  document.getElementById('syncDot').className = 'sync-dot'+(ok?' live':' err');
+  document.getElementById('syncLabel').textContent = ok ? 'LIVE' : 'OFFLINE';
 }
 
-// ══════════════════════════════════════
-//  AUTH TAB SWITCHING
-// ══════════════════════════════════════
-window.switchAuthTab = function(t) {
+// ── AUTH TABS ────────────────────────────────────
+window.switchAuthTab = t => {
   ['login','register','admin'].forEach(x => {
     document.getElementById('atab-'+x).classList.toggle('active', x===t);
     document.getElementById('aform-'+x).style.display = x===t ? 'block' : 'none';
   });
 };
 
-// ══════════════════════════════════════
-//  REGISTER
-// ══════════════════════════════════════
+// ── REGISTER ─────────────────────────────────────
 window.doRegister = async function() {
   const name = v('reg-name');
   const user = v('reg-user').toLowerCase().replace(/\s+/g,'_');
   const pass = document.getElementById('reg-pass').value;
   if (!name||!user||!pass) { toast('reg-toast','All fields are required','error'); return; }
-  if (pass.length < 4)      { toast('reg-toast','Password must be at least 4 characters','error'); return; }
-
+  if (pass.length < 4)     { toast('reg-toast','Password needs 4+ characters','error'); return; }
   setBtnLoading('reg-btn', true);
   try {
-    // Check if username taken
     const snap = await get(ref(db,`users/${user}`));
-    if (snap.exists()) { toast('reg-toast','Username already taken — choose another','error'); return; }
-
-    // Create user + player entry
+    if (snap.exists()) { toast('reg-toast','Username taken — try another','error'); return; }
     await set(ref(db,`users/${user}`), { name, pass, createdAt: Date.now() });
     await set(ref(db,`players/${user}`), { name, score:0, flagCount:0 });
-
     toast('reg-toast','Account created! Logging you in...','success');
-    setTimeout(() => {
-      session = { user, name, role:'student' };
-      enterStudentScreen();
-    }, 900);
-  } catch(e) {
-    toast('reg-toast','Error: '+e.message,'error');
-  } finally {
-    setBtnLoading('reg-btn', false);
-  }
+    setTimeout(() => { session={user,name,role:'student'}; enterStudentScreen(); }, 900);
+  } catch(e) { toast('reg-toast','Error: '+e.message,'error'); }
+  finally { setBtnLoading('reg-btn', false); }
 };
 
-// ══════════════════════════════════════
-//  LOGIN
-// ══════════════════════════════════════
+// ── STUDENT LOGIN ────────────────────────────────
 window.doLogin = async function() {
   const user = v('login-user').toLowerCase();
   const pass = document.getElementById('login-pass').value;
   if (!user||!pass) { toast('login-toast','Enter username and password','error'); return; }
-
   setBtnLoading('login-btn', true);
   try {
     const snap = await get(ref(db,`users/${user}`));
-    if (!snap.exists()) { toast('login-toast','Username not found','error'); return; }
-    const u = snap.val();
-    if (u.pass !== pass) { toast('login-toast','Wrong password','error'); return; }
-
-    session = { user, name: u.name, role:'student' };
+    if (!snap.exists())           { toast('login-toast','Username not found','error'); return; }
+    if (snap.val().pass !== pass) { toast('login-toast','Wrong password','error'); return; }
+    session = { user, name: snap.val().name, role:'student' };
     enterStudentScreen();
+  } catch(e) { toast('login-toast','Error: '+e.message,'error'); }
+  finally { setBtnLoading('login-btn', false); }
+};
+
+// ── ADMIN LOGIN via Firebase Authentication ──────
+//  The email+password go directly to Firebase over
+//  HTTPS. They are never stored anywhere in this
+//  project — not in index.html, not in config.js.
+//  They live only inside Firebase Authentication.
+window.doAdminLogin = async function() {
+  const email = v('admin-email');
+  const pass  = document.getElementById('admin-pass').value;
+  if (!email||!pass) { toast('admin-auth-toast','Enter email and password','error'); return; }
+  setBtnLoading('admin-btn', true);
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, pass);
+    if (cred.user.uid !== ADMIN_UID) {
+      await fbSignOut(auth);
+      toast('admin-auth-toast','Not authorised as admin','error');
+      return;
+    }
+    session = { user:'__admin__', name:'Admin', role:'admin', uid: cred.user.uid };
+    enterAdminScreen();
   } catch(e) {
-    toast('login-toast','Error: '+e.message,'error');
-  } finally {
-    setBtnLoading('login-btn', false);
-  }
+    const msg =
+      (e.code==='auth/invalid-credential'||e.code==='auth/wrong-password')
+        ? 'Wrong email or password'
+      : e.code==='auth/too-many-requests'
+        ? 'Too many attempts — try again later'
+      : e.message;
+    toast('admin-auth-toast', msg, 'error');
+  } finally { setBtnLoading('admin-btn', false); }
 };
 
-// ══════════════════════════════════════
-//  ADMIN LOGIN
-// ══════════════════════════════════════
-window.doAdminLogin = function() {
-  const pass = document.getElementById('admin-pass').value;
-  if (pass !== ADMIN_PASSWORD) { toast('admin-auth-toast','Wrong admin password','error'); return; }
-  session = { user:'__admin__', name:'Admin', role:'admin' };
-  enterAdminScreen();
-};
-
-// ══════════════════════════════════════
-//  LOGOUT
-// ══════════════════════════════════════
-window.logout = function() {
+// ── LOGOUT ────────────────────────────────────────
+window.logout = async function() {
+  if (session?.role==='admin') await fbSignOut(auth).catch(()=>{});
   session = null;
   showScreen('auth');
   document.getElementById('userChip').classList.remove('visible');
-  document.getElementById('login-user').value='';
-  document.getElementById('login-pass').value='';
-  document.getElementById('admin-pass').value='';
+  ['login-user','login-pass','admin-email','admin-pass'].forEach(id=>{
+    const e=document.getElementById(id); if(e) e.value='';
+  });
   switchAuthTab('login');
 };
 
-// ══════════════════════════════════════
-//  SCREEN HELPERS
-// ══════════════════════════════════════
+// ── SCREENS ──────────────────────────────────────
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+name).classList.add('active');
 }
-
 function enterStudentScreen() {
-  showScreen('student');
-  // Activate first tab
-  switchTab('submit','s');
-  updateUserChip();
-  refreshStudentBanner();
-  renderStudentHistory();
+  showScreen('student'); switchTab('submit','s');
+  updateUserChip(); refreshStudentBanner(); renderStudentHistory();
 }
-
 function enterAdminScreen() {
-  showScreen('admin');
-  switchTab('lb','a');
-  updateUserChip();
-  renderLeaderboard();
-  renderFlagGrid();
-  renderUserList();
+  showScreen('admin'); switchTab('lb','a');
+  updateUserChip(); renderLeaderboard(); renderFlagGrid();
 }
-
 function updateUserChip() {
   document.getElementById('userChipName').textContent = session.name;
   document.getElementById('userChipBadge').innerHTML =
     session.role==='admin' ? '<span class="admin-badge">ADMIN</span>' : '';
   document.getElementById('userChip').classList.add('visible');
 }
+function isAdmin() { return session?.role==='admin'; }
 
-function isAdmin() { return session && session.role==='admin'; }
-
-// ══════════════════════════════════════
-//  TAB SWITCHING
-// ══════════════════════════════════════
+// ── TABS ─────────────────────────────────────────
 window.switchTab = function(tab, prefix) {
-  const tabMap = {
-    s: ['submit','history'],
-    a: ['lb','flags','users','danger']
-  };
-  tabMap[prefix].forEach(t => {
-    const tabEl = document.getElementById((prefix==='s'?'stab':'atab')+'-'+t);
-    const panEl = document.getElementById((prefix==='s'?'spanel':'apanel')+'-'+t);
-    if(tabEl) tabEl.classList.toggle('active', t===tab);
-    if(panEl) panEl.classList.toggle('active', t===tab);
+  const ids = prefix==='s' ? ['submit','history'] : ['lb','flags','users','danger'];
+  const tp  = prefix==='s' ? 'stab'   : 'atab';
+  const pp  = prefix==='s' ? 'spanel' : 'apanel';
+  ids.forEach(t => {
+    document.getElementById(tp+'-'+t)?.classList.toggle('active', t===tab);
+    document.getElementById(pp+'-'+t)?.classList.toggle('active', t===tab);
   });
-  if (tab==='history') renderStudentHistory();
-  if (tab==='lb')      renderLeaderboard();
-  if (tab==='flags')   renderFlagGrid();
-  if (tab==='users')   renderUserList();
+  if(tab==='history') renderStudentHistory();
+  if(tab==='lb')      renderLeaderboard();
+  if(tab==='flags')   renderFlagGrid();
+  if(tab==='users')   renderUserList();
 };
 
-// ══════════════════════════════════════
-//  SUBMIT FLAG
-// ══════════════════════════════════════
+// ── SUBMIT FLAG ──────────────────────────────────
 window.submitFlag = async function() {
   if (!session) return;
   const flag = document.getElementById('flagInput').value.trim().toUpperCase();
-  if (!flag) { toast('submit-toast','Enter a flag code','error'); return; }
+  if (!flag)              { toast('submit-toast','Enter a flag code','error'); return; }
   if (!cache.flags[flag]) { toast('submit-toast','Invalid flag — keep hunting!','error'); return; }
-
   setBtnLoading('submit-btn', true);
   try {
-    const key = session.user;
-    // Check if already submitted
-    const playerSnap = await get(ref(db,`players/${key}`));
-    const player = playerSnap.val() || { name:session.name, score:0, flagCount:0 };
-    const safeFlag = flag.replace(/[\.\#\$\[\]\/]/g,'_');
+    const key      = session.user;
+    const safeFlag = safeKey(flag);
+    const dupSnap  = await get(ref(db,`submittedFlags/${key}/${safeFlag}`));
+    if (dupSnap.exists()) { toast('submit-toast','Already submitted this flag!','info'); return; }
 
-    // Check submitted flags list
-    const subCheck = await get(ref(db,`submittedFlags/${key}/${safeFlag}`));
-    if (subCheck.exists()) {
-      toast('submit-toast','Already submitted this flag!','info');
-      return;
-    }
-
-    const pts = cache.flags[flag];
-    const newScore = (player.score||0) + pts;
-    const newCount = (player.flagCount||0) + 1;
-
-    // Atomic updates
-    const updates = {};
-    updates[`players/${key}/score`]          = newScore;
-    updates[`players/${key}/flagCount`]      = newCount;
-    updates[`players/${key}/name`]           = session.name;
-    updates[`submittedFlags/${key}/${safeFlag}`] = { flag, pts, time: Date.now() };
-    await update(ref(db), updates);
-
-    // Also push to submissions log
-    await push(ref(db,'submissions'), {
-      player: session.name,
-      username: key,
-      flag, pts,
-      time: Date.now()
+    const player = cache.players[key] || { name:session.name, score:0, flagCount:0 };
+    const pts    = cache.flags[flag];
+    await update(ref(db), {
+      [`players/${key}/score`]:               (player.score||0)+pts,
+      [`players/${key}/flagCount`]:           (player.flagCount||0)+1,
+      [`players/${key}/name`]:               session.name,
+      [`submittedFlags/${key}/${safeFlag}`]:  { flag, pts, time: Date.now() }
     });
-
-    toast('submit-toast', `+${pts} pts — Flag captured: ${flag}`, 'success');
+    await push(ref(db,'submissions'), {
+      player:session.name, username:key, flag, pts, time:Date.now()
+    });
+    toast('submit-toast',`+${pts} pts — Flag captured: ${flag}`,'success');
     document.getElementById('flagInput').value = '';
-    // Banner refreshes automatically via onValue listener on players
-  } catch(e) {
-    toast('submit-toast','Error: '+e.message,'error');
-  } finally {
-    setBtnLoading('submit-btn', false);
-  }
+    // Score banner auto-refreshes via onValue on players node
+  } catch(e) { toast('submit-toast','Error: '+e.message,'error'); }
+  finally { setBtnLoading('submit-btn', false); }
 };
 
-// ══════════════════════════════════════
-//  STUDENT BANNER (live via onValue)
-// ══════════════════════════════════════
+// ── STUDENT BANNER — live via onValue ─────────────
 function refreshStudentBanner() {
-  if (!session || isAdmin()) return;
-  const p = cache.players[session.user];
-  const score = p ? (p.score||0) : 0;
-  const count = p ? (p.flagCount||0) : 0;
-  document.getElementById('s-score').textContent = score;
-  document.getElementById('s-flagcount').textContent =
-    count + ' flag' + (count!==1?'s':'') + ' captured';
+  if (!session||isAdmin()) return;
+  const p     = cache.players[session.user];
+  const score = p?.score     || 0;
+  const count = p?.flagCount || 0;
+  document.getElementById('s-score').textContent     = score;
+  document.getElementById('s-flagcount').textContent = count+' flag'+(count!==1?'s':'')+' captured';
 }
 
-// ══════════════════════════════════════
-//  STUDENT HISTORY (live via onValue)
-// ══════════════════════════════════════
+// ── STUDENT HISTORY — reads user's own DB node ────
+//  Mobile submits → data written to Firebase →
+//  laptop opens this tab → fetches same Firebase node
+//  → sees mobile submissions immediately
 async function renderStudentHistory() {
-  if (!session || isAdmin()) return;
+  if (!session||isAdmin()) return;
   const list  = document.getElementById('s-history-list');
   const empty = document.getElementById('s-history-empty');
   const total = document.getElementById('s-hist-total');
-
-  // Fetch this user's submitted flags from DB
-  let subs = [];
+  list.querySelectorAll('.history-item').forEach(e=>e.remove());
   try {
     const snap = await get(ref(db,`submittedFlags/${session.user}`));
-    if (snap.exists()) {
-      subs = Object.values(snap.val()).sort((a,b)=>b.time-a.time);
-    }
-  } catch(e) {}
-
-  list.querySelectorAll('.history-item').forEach(e=>e.remove());
-
-  if (subs.length===0) {
-    empty.style.display='block';
-    total.textContent='';
-    return;
-  }
-
-  empty.style.display='none';
-  const totalPts = subs.reduce((a,s)=>a+s.pts,0);
-  total.textContent = totalPts+' pts total';
-
-  subs.forEach(s => {
-    const item = document.createElement('div');
-    item.className='history-item';
-    item.innerHTML=`<span class="hist-flag">${s.flag}</span><span class="hist-pts">+${s.pts}</span><span class="hist-time">${new Date(s.time).toLocaleTimeString()}</span>`;
-    list.appendChild(item);
-  });
+    if (!snap.exists()) { empty.style.display='block'; total.textContent=''; return; }
+    const subs = Object.values(snap.val()).sort((a,b)=>b.time-a.time);
+    empty.style.display='none';
+    total.textContent = subs.reduce((a,s)=>a+s.pts,0)+' pts total';
+    subs.forEach(s=>{
+      const item=document.createElement('div');
+      item.className='history-item';
+      item.innerHTML=`<span class="hist-flag">${esc(s.flag)}</span><span class="hist-pts">+${s.pts}</span><span class="hist-time">${new Date(s.time).toLocaleTimeString()}</span>`;
+      list.appendChild(item);
+    });
+  } catch(e) { empty.style.display='block'; empty.textContent='// Error loading history'; }
 }
 
-// ══════════════════════════════════════
-//  LEADERBOARD (live via onValue)
-// ══════════════════════════════════════
+// ── LEADERBOARD — live via onValue ────────────────
 function renderLeaderboard() {
   if (!isAdmin()) return;
   const lb = document.getElementById('leaderboard');
   const players = Object.entries(cache.players)
-    .map(([k,v])=>({...v,key:k}))
+    .map(([k,p])=>({...p,key:k}))
     .filter(p=>p.score>0)
     .sort((a,b)=>b.score-a.score);
-
-  if (players.length===0) {
-    lb.innerHTML='<div class="lb-empty">// No submissions yet</div>'; return;
-  }
+  if (!players.length) { lb.innerHTML='<div class="lb-empty">// No submissions yet</div>'; return; }
   lb.innerHTML='';
   players.forEach((p,i)=>{
-    const rank=i+1;
-    const rc=['rank-1','rank-2','rank-3'][i]||'rank-n';
-    const rowc=['top1','top2','top3'][i]||'';
+    const rank=i+1, rc=['rank-1','rank-2','rank-3'][i]||'rank-n', rowc=['top1','top2','top3'][i]||'';
     const d=document.createElement('div');
     d.className=`lb-row ${rowc}`;
     d.style.animationDelay=(i*0.04)+'s';
@@ -678,139 +566,94 @@ function renderLeaderboard() {
   });
 }
 
-// ══════════════════════════════════════
-//  STATS (live)
-// ══════════════════════════════════════
 function updateStats() {
-  const players = Object.values(cache.players).filter(p=>p.score>0);
+  const players    = Object.values(cache.players).filter(p=>p.score>0);
   const flagsFound = new Set(cache.submissions.map(s=>s.flag)).size;
   el('stat-players', players.length);
   el('stat-found',   flagsFound);
   el('stat-total',   Object.keys(cache.flags).length);
 }
 
-// ══════════════════════════════════════
-//  FLAG MANAGEMENT
-// ══════════════════════════════════════
+// ── FLAG MANAGEMENT ──────────────────────────────
 function renderFlagGrid() {
-  const grid = document.getElementById('flagGrid');
-  if (!grid) return;
+  const grid=document.getElementById('flagGrid'); if(!grid) return;
   grid.innerHTML='';
   Object.entries(cache.flags).forEach(([code,pts])=>{
-    const d=document.createElement('div');
-    d.className='flag-entry';
+    const d=document.createElement('div'); d.className='flag-entry';
     d.innerHTML=`<span class="fe-code">${esc(code)}</span><span class="fe-pts">${pts} pts</span><button class="del-btn" onclick="deleteFlag('${esc(code)}')">✕</button>`;
     grid.appendChild(d);
   });
 }
-
 window.addFlag = async function() {
-  const code = v('newFlag').toUpperCase();
-  const pts  = parseInt(v('newPoints'));
-  if (!code||isNaN(pts)||pts<=0) { alert('Enter a valid flag code and points.'); return; }
-  await set(ref(db,`flags/${code.replace(/[\.\#\$\[\]\/]/g,'_')}`), pts);
+  const code=v('newFlag').toUpperCase(), pts=parseInt(v('newPoints'));
+  if (!code||isNaN(pts)||pts<=0) { alert('Enter a valid flag and points.'); return; }
+  await set(ref(db,`flags/${safeKey(code)}`), pts);
   document.getElementById('newFlag').value='';
   document.getElementById('newPoints').value='';
 };
-
 window.deleteFlag = async function(code) {
   if (!confirm('Delete '+code+'?')) return;
-  await remove(ref(db,`flags/${code.replace(/[\.\#\$\[\]\/]/g,'_')}`));
+  await remove(ref(db,`flags/${safeKey(code)}`));
 };
 
-// ══════════════════════════════════════
-//  USER LIST
-// ══════════════════════════════════════
+// ── USER LIST ────────────────────────────────────
 async function renderUserList() {
-  const ul = document.getElementById('userList');
-  if (!ul) return;
+  const ul=document.getElementById('userList'); if(!ul) return;
   ul.innerHTML='<div class="history-empty">// Loading...</div>';
   try {
-    const snap = await get(ref(db,'users'));
+    const snap=await get(ref(db,'users'));
     ul.innerHTML='';
-    if (!snap.exists()) {
-      ul.innerHTML='<div class="history-empty">// No registered users yet</div>'; return;
-    }
+    if (!snap.exists()) { ul.innerHTML='<div class="history-empty">// No users yet</div>'; return; }
     Object.entries(snap.val()).forEach(([uname,u])=>{
-      const p = cache.players[uname]||{};
-      const d=document.createElement('div');
-      d.className='history-item';
+      const p=cache.players[uname]||{};
+      const d=document.createElement('div'); d.className='history-item';
       d.innerHTML=`<span class="hist-flag" style="color:#c0d8c0">${esc(u.name)}</span><span class="hist-time">@${esc(uname)}</span><span class="hist-pts">${p.score||0} pts</span><button class="del-btn" onclick="deleteUser('${esc(uname)}')">✕</button>`;
       ul.appendChild(d);
     });
-  } catch(e) {
-    ul.innerHTML='<div class="history-empty">// Error loading users</div>';
-  }
+  } catch(e) { ul.innerHTML='<div class="history-empty">// Error loading users</div>'; }
 }
-
 window.deleteUser = async function(uname) {
-  if (!confirm('Remove user @'+uname+' and all their data?')) return;
-  const updates={};
-  updates[`users/${uname}`]=null;
-  updates[`players/${uname}`]=null;
-  updates[`submittedFlags/${uname}`]=null;
-  await update(ref(db), updates);
+  if (!confirm('Remove @'+uname+' and all their data?')) return;
+  await update(ref(db),{[`users/${uname}`]:null,[`players/${uname}`]:null,[`submittedFlags/${uname}`]:null});
   renderUserList();
 };
 
-// ══════════════════════════════════════
-//  DANGER ZONE
-// ══════════════════════════════════════
+// ── DANGER ZONE ──────────────────────────────────
 window.clearScores = async function() {
-  if (!confirm('Reset ALL scores and submissions to zero? User accounts are kept.')) return;
-  const snap = await get(ref(db,'players'));
-  if (!snap.exists()) return;
-  const updates={};
-  Object.keys(snap.val()).forEach(k=>{
-    updates[`players/${k}/score`]=0;
-    updates[`players/${k}/flagCount`]=0;
-  });
-  updates['submissions']=null;
-  updates['submittedFlags']=null;
-  await update(ref(db), updates);
-  toast_admin('Scores cleared');
+  if (!confirm('Reset all scores? Accounts are kept.')) return;
+  const snap=await get(ref(db,'players')); if(!snap.exists()) return;
+  const updates={submissions:null,submittedFlags:null};
+  Object.keys(snap.val()).forEach(k=>{ updates[`players/${k}/score`]=0; updates[`players/${k}/flagCount`]=0; });
+  await update(ref(db),updates);
 };
-
 window.clearAllUsers = async function() {
-  if (!confirm('DELETE ALL users, scores and submissions? Cannot undo.')) return;
+  if (!confirm('DELETE ALL users and scores? Cannot undo.')) return;
   await update(ref(db),{users:null,players:null,submissions:null,submittedFlags:null});
   renderUserList();
-  toast_admin('All users deleted');
 };
-
 window.clearAllFlags = async function() {
   if (!confirm('DELETE ALL flags? Cannot undo.')) return;
   await set(ref(db,'flags'),null);
-  toast_admin('All flags deleted');
 };
 
-function toast_admin(msg) { alert(msg); }
-
-// ══════════════════════════════════════
-//  UTILS
-// ══════════════════════════════════════
-function v(id) { return document.getElementById(id).value.trim(); }
+// ── UTILS ────────────────────────────────────────
+function v(id)      { return document.getElementById(id)?.value.trim()||''; }
 function el(id,val) { const e=document.getElementById(id); if(e) e.textContent=val; }
-function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function setBtnLoading(id, on) {
-  const b=document.getElementById(id);
-  if(!b) return;
-  b.disabled=on;
-  b.textContent=on?'// please wait...': b.getAttribute('data-label')||b.textContent;
+function esc(s)     { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function safeKey(s) { return s.replace(/[\.\#\$\[\]\/]/g,'_'); }
+function setBtnLoading(id,on) {
+  const b=document.getElementById(id); if(!b) return;
+  if(on){ b.setAttribute('data-label',b.textContent); b.disabled=true; b.textContent='// please wait...'; }
+  else  { b.disabled=false; b.textContent=b.getAttribute('data-label')||b.textContent; }
+}
+function toast(id,msg,type) {
+  const e=document.getElementById(id); if(!e) return;
+  e.className='toast '+type;
+  e.innerHTML=(type==='success'?'✓ ':type==='error'?'✗ ':'ℹ ')+msg;
+  clearTimeout(e._t);
+  e._t=setTimeout(()=>{ e.style.display='none'; e.className='toast'; },3500);
 }
 
-function toast(id, msg, type) {
-  const el=document.getElementById(id);
-  if(!el) return;
-  el.className='toast '+type;
-  el.innerHTML=(type==='success'?'✓ ':type==='error'?'✗ ':'ℹ ')+msg;
-  clearTimeout(el._t);
-  el._t=setTimeout(()=>{el.style.display='none';el.className='toast';},3500);
-}
-
-// ══════════════════════════════════════
-//  START
-// ══════════════════════════════════════
 init();
 </script>
 </body>
