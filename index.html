@@ -6,56 +6,69 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:#0a0e14;color:#e0e6f0;font-family:'Space Grotesk',sans-serif;min-height:100vh;}
   .scanline{position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,128,0.012) 2px,rgba(0,255,128,0.012) 4px);pointer-events:none;z-index:0;}
-  .app{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 1rem 3rem;}
-  header{padding:2rem 0 1.5rem;border-bottom:1px solid #1e2d1e;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;}
-  .logo{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:#00ff88;letter-spacing:-0.5px;}
+  .app{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 1rem 3rem;}
+
+  /* HEADER */
+  header{padding:1.75rem 0 1.25rem;border-bottom:1px solid #1e2d1e;margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .logo{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#00ff88;letter-spacing:-0.5px;}
   .logo span{color:#ff4d6d;}
+  .header-right{display:flex;align-items:center;gap:10px;}
+  .user-chip{font-family:'JetBrains Mono',monospace;font-size:12px;background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.2);color:#00ff88;padding:5px 12px;border-radius:20px;display:none;align-items:center;gap:8px;}
+  .user-chip.visible{display:flex;}
+  .logout-btn{background:transparent;border:none;color:#2a5a2a;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;padding:2px 4px;transition:color 0.2s;}
+  .logout-btn:hover{color:#ff4d6d;}
   .event-badge{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);color:#00ff88;padding:4px 12px;border-radius:20px;letter-spacing:1px;}
   .blink{animation:blink 1.2s step-start infinite;}
   @keyframes blink{50%{opacity:0;}}
 
-  /* CONFIG BANNER */
-  .config-banner{background:rgba(255,180,0,0.08);border:1px solid rgba(255,180,0,0.35);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-family:'JetBrains Mono',monospace;font-size:12px;color:#ffb400;line-height:1.8;}
-  .config-banner strong{color:#ffd060;display:block;margin-bottom:4px;font-size:13px;}
-  .config-banner code{background:rgba(255,180,0,0.1);padding:2px 6px;border-radius:4px;font-size:11px;}
-  .config-banner.hidden{display:none;}
+  /* SCREENS */
+  .screen{display:none;}
+  .screen.active{display:block;animation:fadeIn 0.3s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
-  .tabs{display:flex;gap:4px;margin-bottom:1.5rem;background:#0d1117;border-radius:10px;padding:4px;border:1px solid #1e2d1e;}
-  .tab{flex:1;padding:10px;border:none;background:transparent;color:#4a6a4a;font-family:'JetBrains Mono',monospace;font-size:13px;border-radius:7px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
-  .tab.active{background:#0f1e0f;color:#00ff88;border:1px solid rgba(0,255,136,0.25);}
-  .tab:hover:not(.active){color:#8aaa8a;}
-  .panel{display:none;}
-  .panel.active{display:block;animation:fadeIn 0.25s ease;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  /* LOGIN / REGISTER */
+  .auth-wrap{max-width:420px;margin:2rem auto;}
+  .auth-toggle{display:flex;gap:4px;margin-bottom:1.5rem;background:#0d1117;border-radius:10px;padding:4px;border:1px solid #1e2d1e;}
+  .auth-tab{flex:1;padding:9px;border:none;background:transparent;color:#4a6a4a;font-family:'JetBrains Mono',monospace;font-size:12px;border-radius:7px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
+  .auth-tab.active{background:#0f1e0f;color:#00ff88;border:1px solid rgba(0,255,136,0.25);}
 
   .terminal-box{background:#0d1117;border:1px solid #1e2d1e;border-radius:12px;padding:1.5rem;margin-bottom:1.25rem;}
   .terminal-header{display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid #1a2a1a;}
   .dot{width:10px;height:10px;border-radius:50%;}
   .dot-r{background:#ff5f57;}.dot-y{background:#ffbd2e;}.dot-g{background:#28ca41;}
   .terminal-title{font-family:'JetBrains Mono',monospace;font-size:12px;color:#4a6a4a;margin-left:auto;}
-  .form-group{margin-bottom:1.25rem;}
-  label{display:block;font-size:12px;color:#4a8a6a;font-family:'JetBrains Mono',monospace;margin-bottom:8px;letter-spacing:0.5px;}
-  input[type="text"]{width:100%;background:#070c07;border:1px solid #1e3a1e;color:#e0f0e0;font-family:'JetBrains Mono',monospace;font-size:14px;padding:12px 14px;border-radius:8px;outline:none;transition:border-color 0.2s;}
-  input[type="text"]:focus{border-color:#00ff88;box-shadow:0 0 0 3px rgba(0,255,136,0.08);}
-  input[type="text"]::placeholder{color:#2a4a2a;}
+  .form-group{margin-bottom:1.1rem;}
+  label{display:block;font-size:12px;color:#4a8a6a;font-family:'JetBrains Mono',monospace;margin-bottom:7px;letter-spacing:0.5px;}
+  input[type="text"],input[type="password"]{width:100%;background:#070c07;border:1px solid #1e3a1e;color:#e0f0e0;font-family:'JetBrains Mono',monospace;font-size:14px;padding:11px 14px;border-radius:8px;outline:none;transition:border-color 0.2s;}
+  input[type="text"]:focus,input[type="password"]:focus{border-color:#00ff88;box-shadow:0 0 0 3px rgba(0,255,136,0.08);}
+  input::placeholder{color:#2a4a2a;}
   .flag-input{letter-spacing:1px;text-transform:uppercase;}
-  .name-input{padding-left:36px!important;}
-  .input-wrap{position:relative;}
-  .input-prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:14px;color:#00ff88;opacity:0.5;}
-  .submit-btn{width:100%;padding:13px;background:linear-gradient(135deg,#00cc6a,#00ff88);border:none;border-radius:8px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#030a03;letter-spacing:1px;transition:all 0.2s;margin-top:0.5rem;}
-  .submit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,255,136,0.25);}
-  .submit-btn:active{transform:translateY(0);}
-  .submit-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
-  .toast{padding:12px 16px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:13px;margin-top:1rem;display:none;align-items:center;gap:10px;}
+  .primary-btn{width:100%;padding:12px;background:linear-gradient(135deg,#00cc6a,#00ff88);border:none;border-radius:8px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#030a03;letter-spacing:1px;transition:all 0.2s;margin-top:0.25rem;}
+  .primary-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,255,136,0.25);}
+  .primary-btn:active{transform:translateY(0);}
+  .toast{padding:11px 14px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;margin-top:0.9rem;display:none;align-items:center;gap:8px;}
   .toast.success{background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);color:#00ff88;display:flex;}
   .toast.error{background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.3);color:#ff4d6d;display:flex;}
   .toast.info{background:rgba(0,150,255,0.08);border:1px solid rgba(0,150,255,0.3);color:#4db8ff;display:flex;}
 
+  /* TABS (student view — no leaderboard) */
+  .tabs{display:flex;gap:4px;margin-bottom:1.5rem;background:#0d1117;border-radius:10px;padding:4px;border:1px solid #1e2d1e;}
+  .tab{flex:1;padding:10px;border:none;background:transparent;color:#4a6a4a;font-family:'JetBrains Mono',monospace;font-size:12px;border-radius:7px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
+  .tab.active{background:#0f1e0f;color:#00ff88;border:1px solid rgba(0,255,136,0.25);}
+  .tab:hover:not(.active){color:#8aaa8a;}
+  .panel{display:none;}
+  .panel.active{display:block;animation:fadeIn 0.25s ease;}
+
+  /* SUBMIT */
+  .score-banner{background:#070c07;border:1px solid rgba(0,255,136,0.15);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;}
+  .score-label{font-family:'JetBrains Mono',monospace;font-size:12px;color:#2a5a2a;}
+  .score-val{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;color:#00ff88;}
+  .score-flags{font-family:'JetBrains Mono',monospace;font-size:11px;color:#2a5a2a;text-align:right;}
+
+  /* HISTORY */
   .history-box{background:#0d1117;border:1px solid #1e2d1e;border-radius:12px;padding:1.25rem;}
   .history-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid #1a2a1a;}
   .history-title{font-size:12px;color:#4a6a4a;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
-  .history-score{font-family:'JetBrains Mono',monospace;font-size:13px;color:#00ff88;font-weight:700;}
-  .history-score span{color:#2a5a2a;font-weight:400;}
   .history-list{display:flex;flex-direction:column;gap:6px;}
   .history-empty{text-align:center;padding:1.5rem;color:#2a4a2a;font-family:'JetBrains Mono',monospace;font-size:12px;border:1px dashed #1a2a1a;border-radius:8px;}
   .history-item{display:flex;align-items:center;gap:10px;background:#070c07;border:1px solid #1a2a1a;border-radius:6px;padding:10px 12px;animation:slideIn 0.3s ease;}
@@ -64,6 +77,7 @@
   .hist-pts{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#00ff88;}
   .hist-time{font-size:11px;color:#2a4a2a;font-family:'JetBrains Mono',monospace;}
 
+  /* ADMIN - LEADERBOARD */
   .lb-header{display:grid;grid-template-columns:48px 1fr auto auto;gap:12px;padding:6px 16px;margin-bottom:6px;font-size:11px;color:#2a4a2a;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
   .lb-row{display:grid;grid-template-columns:48px 1fr auto auto;gap:12px;align-items:center;background:#0d1117;border:1px solid #1a2a1a;border-radius:10px;padding:14px 16px;margin-bottom:6px;transition:border-color 0.2s,transform 0.15s;}
   .lb-row:hover{border-color:#1e3a1e;transform:translateX(2px);}
@@ -76,20 +90,10 @@
   .lb-flags{font-family:'JetBrains Mono',monospace;font-size:12px;color:#2a5a2a;text-align:center;}
   .lb-score{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#00ff88;text-align:right;}
   .lb-empty{text-align:center;padding:3rem;color:#2a4a2a;font-family:'JetBrains Mono',monospace;font-size:13px;}
-  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem;}
   .stat-card{background:#070c07;border:1px solid #1a2a1a;border-radius:8px;padding:14px;text-align:center;}
   .stat-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#00ff88;}
   .stat-lbl{font-size:11px;color:#2a5a2a;margin-top:4px;font-family:'JetBrains Mono',monospace;}
-  .sync-dot{width:8px;height:8px;border-radius:50%;background:#2a4a2a;display:inline-block;margin-right:6px;transition:background 0.3s;}
-  .sync-dot.live{background:#00ff88;animation:pulse 2s infinite;}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
-  .sync-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:#2a5a2a;}
-
-  .admin-gate{text-align:center;padding:2rem 0;}
-  .unlock-btn{padding:10px 28px;background:transparent;border:1px solid rgba(0,255,136,0.35);color:#00ff88;font-family:'JetBrains Mono',monospace;font-size:13px;border-radius:7px;cursor:pointer;transition:all 0.2s;}
-  .unlock-btn:hover{background:rgba(0,255,136,0.08);}
-  .admin-section{display:none;}
-  .admin-section.visible{display:block;}
   .section-label{font-size:12px;color:#4a6a4a;font-family:'JetBrains Mono',monospace;margin-bottom:10px;letter-spacing:0.5px;}
   .flag-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:1.5rem;}
   .flag-entry{display:grid;grid-template-columns:1fr 80px 44px;gap:8px;align-items:center;background:#070c07;border:1px solid #1a2a1a;border-radius:8px;padding:10px 12px;}
@@ -102,8 +106,10 @@
   .add-btn:hover{background:rgba(0,255,136,0.15);}
   .danger-btn{padding:10px 20px;background:transparent;border:1px solid rgba(255,77,109,0.3);color:#ff4d6d;font-family:'JetBrains Mono',monospace;font-size:12px;border-radius:7px;cursor:pointer;transition:all 0.2s;}
   .danger-btn:hover{background:rgba(255,77,109,0.08);}
-  .step{display:flex;gap:10px;margin-bottom:10px;font-size:12px;color:#4a8a6a;font-family:'JetBrains Mono',monospace;line-height:1.7;}
-  .step-num{color:#00ff88;font-weight:700;min-width:18px;}
+  .admin-badge{font-family:'JetBrains Mono',monospace;font-size:10px;background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.3);color:#ff4d6d;padding:3px 8px;border-radius:10px;}
+  .sync-dot{width:8px;height:8px;border-radius:50%;background:#2a4a2a;display:inline-block;margin-right:5px;transition:background 0.3s;}
+  .sync-dot.live{background:#00ff88;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
 </style>
 </head>
 <body>
@@ -111,93 +117,175 @@
 <div class="app">
   <header>
     <div class="logo">FLAG<span>{</span>the_code<span>}</span></div>
-    <div class="event-badge"><span id="syncDot" class="sync-dot"></span><span id="syncLabel" class="sync-label">CONNECTING</span></div>
+    <div class="header-right">
+      <div class="user-chip" id="userChip">
+        <span id="userChipName"></span>
+        <span id="userChipBadge"></span>
+        <button class="logout-btn" onclick="logout()">sign out</button>
+      </div>
+      <div class="event-badge"><span class="sync-dot live"></span><span id="syncLabel">LIVE</span></div>
+    </div>
   </header>
 
-  <!-- FIREBASE CONFIG BANNER -->
-
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('submit')">Submit Flag</button>
-    <button class="tab" onclick="switchTab('leaderboard')">Leaderboard</button>
-    <button class="tab" onclick="switchTab('admin')">Admin</button>
-  </div>
-
-  <!-- SUBMIT PANEL -->
-  <div class="panel active" id="panel-submit">
-    <div class="terminal-box">
-      <div class="terminal-header">
-        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
-        <span class="terminal-title">flag_submission.sh</span>
+  <!-- ═══════════════ AUTH SCREEN ═══════════════ -->
+  <div class="screen active" id="screen-auth">
+    <div class="auth-wrap">
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#4a6a4a;margin-bottom:6px;">// welcome to</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:#00ff88;font-weight:700;">Flag the Code — 2025</div>
       </div>
-      <div class="form-group">
-        <label>// YOUR NAME</label>
-        <div class="input-wrap">
-          <span class="input-prefix">$</span>
-          <input type="text" id="playerName" class="name-input" placeholder="enter_your_name" autocomplete="off" oninput="onNameChange()" />
+      <div class="auth-toggle">
+        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</button>
+        <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</button>
+        <button class="auth-tab" id="tab-admin" onclick="switchAuthTab('admin')">Admin</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="form-login">
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="terminal-title">login.sh</span>
+          </div>
+          <div class="form-group">
+            <label>// USERNAME</label>
+            <input type="text" id="login-user" placeholder="your_username" autocomplete="off"/>
+          </div>
+          <div class="form-group">
+            <label>// PASSWORD</label>
+            <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+          </div>
+          <button class="primary-btn" onclick="doLogin()">→ LOGIN</button>
+          <div class="toast" id="login-toast"></div>
         </div>
       </div>
-      <div class="form-group">
-        <label>// FLAG CODE</label>
-        <input type="text" id="flagInput" class="flag-input" placeholder="FLAG{...}" autocomplete="off" />
+
+      <!-- REGISTER -->
+      <div id="form-register" style="display:none;">
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="terminal-title">register.sh</span>
+          </div>
+          <div class="form-group">
+            <label>// DISPLAY NAME</label>
+            <input type="text" id="reg-name" placeholder="your_name" autocomplete="off"/>
+          </div>
+          <div class="form-group">
+            <label>// USERNAME</label>
+            <input type="text" id="reg-user" placeholder="choose_a_username" autocomplete="off"/>
+          </div>
+          <div class="form-group">
+            <label>// PASSWORD</label>
+            <input type="password" id="reg-pass" placeholder="choose_a_password" onkeydown="if(event.key==='Enter')doRegister()"/>
+          </div>
+          <button class="primary-btn" onclick="doRegister()">→ CREATE ACCOUNT</button>
+          <div class="toast" id="reg-toast"></div>
+        </div>
       </div>
-      <button class="submit-btn" id="submitBtn" onclick="submitFlag()">→ SUBMIT FLAG</button>
-      <div class="toast" id="toast"></div>
-    </div>
-    <div class="history-box">
-      <div class="history-top">
-        <div class="history-title">// SUBMISSION HISTORY</div>
-        <div class="history-score" id="histScore" style="display:none"><span>total: </span><span id="histScoreVal">0</span> pts</div>
-      </div>
-      <div class="history-list" id="historyList">
-        <div class="history-empty" id="historyEmpty">// No flags submitted yet — start hunting!</div>
+
+      <!-- ADMIN LOGIN -->
+      <div id="form-admin" style="display:none;">
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="terminal-title">admin_access.sh</span>
+          </div>
+          <div class="form-group">
+            <label>// ADMIN PASSWORD</label>
+            <input type="password" id="admin-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+          </div>
+          <button class="primary-btn" onclick="doAdminLogin()">→ ADMIN LOGIN</button>
+          <div class="toast" id="admin-toast"></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- LEADERBOARD PANEL -->
-  <div class="panel" id="panel-leaderboard">
-    <div class="terminal-box" style="padding:1rem 1.25rem;margin-bottom:1rem;">
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-val" id="statPlayers">0</div><div class="stat-lbl">PLAYERS</div></div>
-        <div class="stat-card"><div class="stat-val" id="statFlagsFound">0</div><div class="stat-lbl">FLAGS FOUND</div></div>
-        <div class="stat-card"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">TOTAL FLAGS</div></div>
-      </div>
+  <!-- ═══════════════ STUDENT SCREEN ═══════════════ -->
+  <div class="screen" id="screen-student">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('submit','student')">Submit Flag</button>
+      <button class="tab" onclick="switchTab('history','student')">My Submissions</button>
     </div>
-    <div class="lb-header">
-      <div style="text-align:center">RANK</div><div>PLAYER</div>
-      <div style="text-align:center">FLAGS</div><div style="text-align:right">SCORE</div>
-    </div>
-    <div id="leaderboard"></div>
-  </div>
 
-  <!-- ADMIN PANEL -->
-  <div class="panel" id="panel-admin">
-    <div class="terminal-box" id="adminGate">
-      <div class="admin-gate">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#4a6a4a;">// ADMIN ACCESS REQUIRED</div>
-        <input type="text" id="adminPass" placeholder="enter admin password" style="max-width:240px;display:block;margin:1rem auto;" />
-        <button class="unlock-btn" onclick="unlockAdmin()">UNLOCK</button>
-        <div class="toast" id="adminToast" style="max-width:300px;margin:1rem auto;"></div>
+    <!-- SUBMIT -->
+    <div class="panel active" id="student-submit">
+      <div class="score-banner">
+        <div>
+          <div class="score-label">// YOUR SCORE</div>
+          <div class="score-val" id="student-score">0</div>
+        </div>
+        <div class="score-flags" id="student-flagcount">0 flags captured</div>
       </div>
-    </div>
-    <div class="admin-section" id="adminPanel">
       <div class="terminal-box">
-        <div class="section-label">// EVENT STATS</div>
+        <div class="terminal-header">
+          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+          <span class="terminal-title">flag_submission.sh</span>
+        </div>
+        <div class="form-group" style="margin-bottom:0.5rem;">
+          <label>// FLAG CODE</label>
+          <input type="text" id="flagInput" class="flag-input" placeholder="FLAG{...}" autocomplete="off"/>
+        </div>
+        <button class="primary-btn" onclick="submitFlag()">→ SUBMIT FLAG</button>
+        <div class="toast" id="submit-toast"></div>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="panel" id="student-history">
+      <div class="history-box">
+        <div class="history-top">
+          <div class="history-title">// MY SUBMITTED FLAGS</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00ff88;" id="hist-total"></div>
+        </div>
+        <div class="history-list" id="historyList">
+          <div class="history-empty" id="historyEmpty">// No flags submitted yet — start hunting!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ ADMIN SCREEN ═══════════════ -->
+  <div class="screen" id="screen-admin">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('leaderboard','admin')">Leaderboard</button>
+      <button class="tab" onclick="switchTab('flags','admin')">Manage Flags</button>
+      <button class="tab" onclick="switchTab('danger','admin')">Danger Zone</button>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div class="panel active" id="admin-leaderboard">
+      <div class="terminal-box" style="padding:1rem 1.25rem;margin-bottom:1rem;">
         <div class="stats-row">
-          <div class="stat-card"><div class="stat-val" id="aStatPlayers">0</div><div class="stat-lbl">PLAYERS</div></div>
-          <div class="stat-card"><div class="stat-val" id="aStatSubs">0</div><div class="stat-lbl">SUBMISSIONS</div></div>
-          <div class="stat-card"><div class="stat-val" id="aStatFlags">0</div><div class="stat-lbl">FLAGS ACTIVE</div></div>
+          <div class="stat-card"><div class="stat-val" id="statPlayers">0</div><div class="stat-lbl">PLAYERS</div></div>
+          <div class="stat-card"><div class="stat-val" id="statFlagsFound">0</div><div class="stat-lbl">FLAGS FOUND</div></div>
+          <div class="stat-card"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">TOTAL FLAGS</div></div>
         </div>
       </div>
+      <div class="lb-header">
+        <div style="text-align:center">RANK</div><div>PLAYER</div>
+        <div style="text-align:center">FLAGS</div><div style="text-align:right">SCORE</div>
+      </div>
+      <div id="leaderboard"></div>
+    </div>
+
+    <!-- FLAGS -->
+    <div class="panel" id="admin-flags">
       <div class="terminal-box">
-        <div class="section-label">// MANAGE FLAGS</div>
+        <div class="section-label">// ADD NEW FLAG</div>
         <div class="add-flag-form">
-          <div><label>Flag Code</label><input type="text" id="newFlag" class="flag-input" placeholder="FLAG{code_here}" /></div>
-          <div><label>Points</label><input type="text" id="newPoints" placeholder="100" /></div>
+          <div><label>Flag Code</label><input type="text" id="newFlag" class="flag-input" placeholder="FLAG{code_here}"/></div>
+          <div><label>Points</label><input type="text" id="newPoints" placeholder="100"/></div>
           <button class="add-btn" onclick="addFlag()">+ ADD</button>
         </div>
+        <div class="section-label">// ACTIVE FLAGS</div>
         <div class="flag-grid" id="flagGrid"></div>
       </div>
+    </div>
+
+    <!-- DANGER -->
+    <div class="panel" id="admin-danger">
       <div class="terminal-box">
         <div class="section-label">// DANGER ZONE</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -205,317 +293,284 @@
           <button class="danger-btn" onclick="clearAllData()">RESET ALL DATA</button>
         </div>
       </div>
+      <div class="terminal-box" style="margin-top:0;">
+        <div class="section-label">// REGISTERED USERS</div>
+        <div id="userList" style="display:flex;flex-direction:column;gap:6px;"></div>
+      </div>
     </div>
   </div>
 </div>
 
-<script type="module">
-// ─────────────────────────────────────────────
-//  PASTE YOUR FIREBASE CONFIG HERE
-//  Replace all PASTE_YOUR_... values below
-// ─────────────────────────────────────────────
-const firebaseConfig = {
-  apiKey: "AIzaSyDctNHWnkY8G4g7K_-zIrtsrp4AmRkjx3w",
-  authDomain: "points-tracker-2f024.firebaseapp.com",
-  databaseURL: "https://points-tracker-2f024-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "points-tracker-2f024",
-  storageBucket: "points-tracker-2f024.firebasestorage.app",
-  messagingSenderId: "683402475231",
-  appId: "1:683402475231:web:0ab91357d452322e0a9b6a",
-  measurementId: "G-NPBS9D4MPZ"
-};
-// ─────────────────────────────────────────────
+<script>
+const ADMIN_PASSWORD = "PASTE_YOUR_ADMIN_PASSWORD";
 
-const ADMIN_PASSWORD = "ftc_admin_2025";
-
-const DEMO_FLAGS = {
-  "FLAG{FIRST_BUG}": 100,
-  "FLAG{NULL_POINTER}": 150,
-  "FLAG{SQL_INJECT}": 200,
-  "FLAG{XSS_VULN}": 175,
-  "FLAG{RACE_COND}": 250,
+const db = {
+  flags: {
+    "FLAG{FIRST_BUG}": 100,
+    "FLAG{NULL_POINTER}": 150,
+    "FLAG{SQL_INJECT}": 200,
+    "FLAG{XSS_VULN}": 175,
+    "FLAG{RACE_COND}": 250,
+  },
+  users: {},
+  players: {},
+  submissions: []
 };
 
-let db = null;
-let isFirebaseReady = false;
-let localState = { flags: {...DEMO_FLAGS}, players: {}, submissions: [] };
+let session = null;
 
-// detect if config is filled in
-const isConfigured = firebaseConfig.apiKey !== "PASTE_YOUR_API_KEY";
-
-async function initFirebase() {
-  if (!isConfigured) {
-    setSync(false, "LOCAL ONLY");
-    return;
-  }
-  try {
-    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
-    const { getDatabase, ref, set, get, onValue, update, remove } =
-      await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js");
-
-    const app = initializeApp(firebaseConfig);
-    db = getDatabase(app);
-    window._fb = { ref, set, get, onValue, update, remove };
-
-    // init flags in DB if empty
-    const flagsSnap = await get(ref(db, 'flags'));
-    if (!flagsSnap.exists()) {
-      await set(ref(db, 'flags'), DEMO_FLAGS);
-    }
-
-    // live listeners
-    onValue(ref(db, 'players'), snap => {
-      localState.players = snap.val() || {};
-      renderLeaderboard();
-      const name = document.getElementById('playerName').value.trim().toLowerCase();
-      if (name) renderHistory(name);
-    });
-
-    onValue(ref(db, 'flags'), snap => {
-      localState.flags = snap.val() || {};
-      renderAdmin();
-      updateLbStats();
-    });
-
-    onValue(ref(db, 'submissions'), snap => {
-      const raw = snap.val() || {};
-      localState.submissions = Object.values(raw);
-      updateLbStats();
-    });
-
-    isFirebaseReady = true;
-    setSync(true, "LIVE");
-    document.getElementById('configBanner').classList.add('hidden');
-  } catch(e) {
-    console.error(e);
-    setSync(false, "ERROR");
-  }
-}
-
-function setSync(live, label) {
-  const dot = document.getElementById('syncDot');
-  const lbl = document.getElementById('syncLabel');
-  dot.className = 'sync-dot' + (live ? ' live' : '');
-  lbl.textContent = label;
-}
-
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    t.classList.toggle('active', ['submit','leaderboard','admin'][i] === tab);
+/* ── AUTH HELPERS ── */
+function switchAuthTab(t) {
+  ['login','register','admin'].forEach(x => {
+    document.getElementById('tab-'+x).classList.toggle('active', x===t);
+    document.getElementById('form-'+x).style.display = x===t ? 'block' : 'none';
   });
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+function doRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const user = document.getElementById('reg-user').value.trim().toLowerCase();
+  const pass = document.getElementById('reg-pass').value;
+  if (!name||!user||!pass) { toast('reg-toast','All fields required','error'); return; }
+  if (db.users[user]) { toast('reg-toast','Username already taken','error'); return; }
+  db.users[user] = { name, pass, score:0, flags:[], flagged:{} };
+  db.players[user] = { name, score:0, flags:[], flagged:{} };
+  toast('reg-toast','Account created! You can now login.','success');
+  setTimeout(() => switchAuthTab('login'), 1200);
+}
+
+function doLogin() {
+  const user = document.getElementById('login-user').value.trim().toLowerCase();
+  const pass = document.getElementById('login-pass').value;
+  if (!user||!pass) { toast('login-toast','Enter username and password','error'); return; }
+  const u = db.users[user];
+  if (!u || u.pass !== pass) { toast('login-toast','Invalid username or password','error'); return; }
+  session = { user, name: u.name, role: 'student' };
+  enterStudentScreen();
+}
+
+function doAdminLogin() {
+  const pass = document.getElementById('admin-pass').value;
+  if (pass !== ADMIN_PASSWORD) { toast('admin-toast','Wrong admin password','error'); return; }
+  session = { user: '__admin__', name: 'Admin', role: 'admin' };
+  enterAdminScreen();
+}
+
+function logout() {
+  session = null;
+  showScreen('auth');
+  document.getElementById('userChip').classList.remove('visible');
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
+  switchAuthTab('login');
+}
+
+/* ── SCREEN TRANSITIONS ── */
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+}
+
+function enterStudentScreen() {
+  showScreen('student');
+  updateUserChip();
+  refreshStudentUI();
+}
+
+function enterAdminScreen() {
+  showScreen('admin');
+  updateUserChip();
+  renderLeaderboard();
+  renderFlagGrid();
+  renderUserList();
+}
+
+function updateUserChip() {
+  const chip = document.getElementById('userChip');
+  document.getElementById('userChipName').textContent = session.name;
+  const badge = document.getElementById('userChipBadge');
+  if (session.role === 'admin') {
+    badge.innerHTML = '<span class="admin-badge">ADMIN</span>';
+  } else { badge.innerHTML = ''; }
+  chip.classList.add('visible');
+}
+
+/* ── TABS ── */
+function switchTab(tab, prefix) {
+  const allTabs = document.querySelectorAll(`#screen-${prefix} .tab`);
+  const allPanels = document.querySelectorAll(`#screen-${prefix} .panel`);
+  allTabs.forEach(t => t.classList.remove('active'));
+  allPanels.forEach(p => p.classList.remove('active'));
+  const idx = [...allTabs].findIndex(t => t.getAttribute('onclick').includes(tab));
+  if (idx >= 0) allTabs[idx].classList.add('active');
+  const panel = document.getElementById(prefix+'-'+tab);
+  if (panel) panel.classList.add('active');
+  if (tab === 'history') renderHistory();
   if (tab === 'leaderboard') renderLeaderboard();
-  if (tab === 'admin') renderAdmin();
+  if (tab === 'flags') renderFlagGrid();
+  if (tab === 'danger') renderUserList();
 }
 
-function showToast(id, msg, type) {
-  const el = document.getElementById(id);
-  el.className = 'toast ' + type;
-  el.innerHTML = (type === 'success' ? '✓ ' : type === 'error' ? '✗ ' : 'ℹ ') + msg;
-  setTimeout(() => { el.style.display='none'; el.className='toast'; }, 3500);
-}
-
-function onNameChange() {
-  const key = document.getElementById('playerName').value.trim().toLowerCase();
-  renderHistory(key);
-}
-
-async function submitFlag() {
-  const name = document.getElementById('playerName').value.trim();
+/* ── SUBMIT FLAG ── */
+function submitFlag() {
+  if (!session) return;
   const flag = document.getElementById('flagInput').value.trim().toUpperCase();
+  if (!flag) { toast('submit-toast','Enter a flag code','error'); return; }
+  if (!db.flags[flag]) { toast('submit-toast','Invalid flag — keep hunting!','error'); return; }
 
-  if (!name) { showToast('toast','Enter your name first','error'); return; }
-  if (!flag)  { showToast('toast','Enter a flag code','error'); return; }
-  if (!localState.flags[flag]) { showToast('toast','Invalid flag — keep hunting!','error'); return; }
+  const key = session.user;
+  const player = db.players[key];
+  const safeFlag = flag.replace(/[{}]/g,'_');
 
-  const key = name.toLowerCase().replace(/[^a-z0-9_]/g,'_');
-  const player = localState.players[key] || { name, score:0, flags:[], flagged:{} };
+  if (player.flagged[safeFlag]) { toast('submit-toast','Already submitted this flag!','info'); return; }
 
-  if (player.flagged && player.flagged[flag.replace(/[{}]/g,'__')]) {
-    showToast('toast','Already submitted this flag!','info'); return;
-  }
+  const pts = db.flags[flag];
+  player.score += pts;
+  player.flags.push(flag);
+  player.flagged[safeFlag] = true;
+  db.users[key].score = player.score;
+  db.submissions.push({ player: session.name, flag, pts, time: Date.now() });
 
-  const pts = localState.flags[flag];
-  const safeFlag = flag.replace(/[{}]/g,'__');
-
-  if (isFirebaseReady && db) {
-    const { ref, update, set } = window._fb;
-    const existing = localState.players[key];
-    const newScore = (existing ? existing.score : 0) + pts;
-    const newFlagList = [...(existing && existing.flags ? existing.flags : []), flag];
-    const flagged = { ...(existing && existing.flagged ? existing.flagged : {}), [safeFlag]: true };
-
-    await update(ref(db, `players/${key}`), { name, score: newScore, flags: newFlagList, flagged });
-    await set(ref(db, `submissions/${key}_${safeFlag}`), { player: name, flag, pts, time: Date.now() });
-  } else {
-    if (!localState.players[key]) localState.players[key] = { name, score:0, flags:[], flagged:{} };
-    localState.players[key].score += pts;
-    localState.players[key].flags.push(flag);
-    localState.players[key].flagged[safeFlag] = true;
-    localState.submissions.push({ player: name, flag, pts, time: Date.now() });
-    renderLeaderboard();
-    renderHistory(key);
-    updateLbStats();
-  }
-
-  showToast('toast', `+${pts} pts — Flag captured: ${flag}`, 'success');
+  toast('submit-toast', `+${pts} pts — Flag captured!`, 'success');
   document.getElementById('flagInput').value = '';
+  refreshStudentUI();
 }
 
-function renderHistory(key) {
+function refreshStudentUI() {
+  if (!session) return;
+  const p = db.players[session.user];
+  if (!p) return;
+  document.getElementById('student-score').textContent = p.score;
+  document.getElementById('student-flagcount').textContent = p.flags.length + ' flag' + (p.flags.length !== 1 ? 's' : '') + ' captured';
+}
+
+function renderHistory() {
+  if (!session) return;
+  const p = db.players[session.user];
   const list = document.getElementById('historyList');
   const empty = document.getElementById('historyEmpty');
-  const scoreEl = document.getElementById('histScore');
-  const scoreVal = document.getElementById('histScoreVal');
-  const player = key ? localState.players[key] : null;
+  const total = document.getElementById('hist-total');
+  list.querySelectorAll('.history-item').forEach(e => e.remove());
 
-  Array.from(list.querySelectorAll('.history-item')).forEach(e => e.remove());
-
-  if (!player || !player.flags || player.flags.length === 0) {
+  if (!p || p.flags.length === 0) {
     empty.style.display = 'block';
-    scoreEl.style.display = 'none';
+    total.textContent = '';
     return;
   }
-
   empty.style.display = 'none';
-  scoreEl.style.display = 'block';
-  scoreVal.textContent = player.score;
+  total.textContent = p.score + ' pts total';
 
-  [...player.flags].reverse().forEach(f => {
-    const sub = localState.submissions.find(s => s.flag === f && s.player.toLowerCase() === key);
-    const timeStr = sub ? new Date(sub.time).toLocaleTimeString() : '';
+  [...p.flags].reverse().forEach(f => {
+    const sub = db.submissions.find(s => s.flag === f && s.player === session.name);
     const item = document.createElement('div');
     item.className = 'history-item';
-    item.innerHTML = `<span class="hist-flag">${f}</span><span class="hist-pts">+${localState.flags[f] || '?'}</span><span class="hist-time">${timeStr}</span>`;
+    item.innerHTML = `<span class="hist-flag">${f}</span><span class="hist-pts">+${db.flags[f]||'?'}</span><span class="hist-time">${sub ? new Date(sub.time).toLocaleTimeString() : ''}</span>`;
     list.appendChild(item);
   });
 }
 
+/* ── LEADERBOARD ── */
 function renderLeaderboard() {
   const lb = document.getElementById('leaderboard');
-  const players = Object.values(localState.players).sort((a,b) => b.score - a.score);
-  updateLbStats();
+  const players = Object.values(db.players).sort((a,b) => b.score - a.score);
+  const flagsFound = new Set(db.submissions.map(s => s.flag)).size;
+  document.getElementById('statPlayers').textContent = Object.keys(db.users).length;
+  document.getElementById('statFlagsFound').textContent = flagsFound;
+  document.getElementById('statTotal').textContent = Object.keys(db.flags).length;
 
-  if (players.length === 0) {
-    lb.innerHTML = '<div class="lb-empty">// No submissions yet — be the first!</div>';
-    return;
+  if (players.filter(p=>p.flags.length>0).length === 0) {
+    lb.innerHTML = '<div class="lb-empty">// No submissions yet</div>'; return;
   }
-
   lb.innerHTML = '';
-  players.forEach((p, i) => {
-    const rank = i + 1;
-    const rankClass = ['rank-1','rank-2','rank-3'][i] || 'rank-n';
-    const rowClass = ['top1','top2','top3'][i] || '';
-    const crown = rank === 1 ? ' ♛' : '';
+  players.filter(p=>p.flags.length>0).forEach((p,i) => {
+    const rank = i+1;
+    const rc = ['rank-1','rank-2','rank-3'][i]||'rank-n';
+    const rowc = ['top1','top2','top3'][i]||'';
     const div = document.createElement('div');
-    div.className = `lb-row ${rowClass}`;
-    div.style.animationDelay = (i * 0.05) + 's';
-    div.innerHTML = `<div class="rank ${rankClass}">#${rank}</div><div class="lb-name">${p.name}${crown}</div><div class="lb-flags">${(p.flags||[]).length} flag${(p.flags||[]).length!==1?'s':''}</div><div class="lb-score">${p.score}</div>`;
+    div.className = `lb-row ${rowc}`;
+    div.style.animationDelay = (i*0.04)+'s';
+    div.innerHTML = `<div class="rank ${rc}">#${rank}</div><div class="lb-name">${p.name}${rank===1?' ♛':''}</div><div class="lb-flags">${p.flags.length}</div><div class="lb-score">${p.score}</div>`;
     lb.appendChild(div);
   });
 }
 
-function updateLbStats() {
-  const players = Object.values(localState.players);
-  const flagsFound = new Set(localState.submissions.map(s => s.flag)).size;
-  ['statPlayers','aStatPlayers'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=players.length; });
-  const sf = document.getElementById('statFlagsFound'); if(sf) sf.textContent = flagsFound;
-  const st = document.getElementById('statTotal'); if(st) st.textContent = Object.keys(localState.flags).length;
-  const as = document.getElementById('aStatSubs'); if(as) as.textContent = localState.submissions.length;
-  const af = document.getElementById('aStatFlags'); if(af) af.textContent = Object.keys(localState.flags).length;
-}
-
-function unlockAdmin() {
-  if (document.getElementById('adminPass').value === ADMIN_PASSWORD) {
-    document.getElementById('adminGate').style.display = 'none';
-    document.getElementById('adminPanel').classList.add('visible');
-    renderAdmin();
-  } else {
-    showToast('adminToast','Wrong password','error');
-  }
-}
-
-function renderAdmin() {
-  updateLbStats();
+/* ── FLAG MANAGEMENT ── */
+function renderFlagGrid() {
   const grid = document.getElementById('flagGrid');
-  if (!grid) return;
   grid.innerHTML = '';
-  Object.entries(localState.flags).forEach(([code, pts]) => {
+  Object.entries(db.flags).forEach(([code,pts]) => {
     const div = document.createElement('div');
     div.className = 'flag-entry';
-    div.innerHTML = `<span class="fe-code">${code}</span><span class="fe-pts">${pts} pts</span><button class="del-btn" onclick="window._deleteFlag('${code}')">✕</button>`;
+    div.innerHTML = `<span class="fe-code">${code}</span><span class="fe-pts">${pts} pts</span><button class="del-btn" onclick="deleteFlag('${code}')">✕</button>`;
     grid.appendChild(div);
   });
 }
 
-async function addFlag() {
+function addFlag() {
   const code = document.getElementById('newFlag').value.trim().toUpperCase();
   const pts = parseInt(document.getElementById('newPoints').value.trim());
-  if (!code || isNaN(pts) || pts <= 0) { alert('Enter a valid flag code and points.'); return; }
-
-  if (isFirebaseReady && db) {
-    await window._fb.set(window._fb.ref(db, `flags/${code.replace(/[{}]/g,'__')}`), pts);
-  } else {
-    localState.flags[code] = pts;
-    renderAdmin();
-    updateLbStats();
-  }
-
+  if (!code||isNaN(pts)||pts<=0) { alert('Enter a valid flag and points.'); return; }
+  db.flags[code] = pts;
   document.getElementById('newFlag').value = '';
   document.getElementById('newPoints').value = '';
+  renderFlagGrid();
 }
 
-async function deleteFlag(code) {
-  if (!confirm('Delete flag ' + code + '?')) return;
-  if (isFirebaseReady && db) {
-    await window._fb.remove(window._fb.ref(db, `flags/${code.replace(/[{}]/g,'__')}`));
-  } else {
-    delete localState.flags[code];
-    renderAdmin();
+function deleteFlag(code) {
+  if (!confirm('Delete '+code+'?')) return;
+  delete db.flags[code];
+  renderFlagGrid();
+}
+
+/* ── USER LIST (admin) ── */
+function renderUserList() {
+  const ul = document.getElementById('userList');
+  ul.innerHTML = '';
+  const users = Object.entries(db.users);
+  if (users.length === 0) {
+    ul.innerHTML = '<div class="history-empty">// No registered users yet</div>'; return;
   }
+  users.forEach(([uname, u]) => {
+    const div = document.createElement('div');
+    div.className = 'history-item';
+    div.innerHTML = `<span class="hist-flag" style="color:#c0d8c0">${u.name}</span><span class="hist-time">@${uname}</span><span class="hist-pts">${u.score} pts</span><button class="del-btn" onclick="deleteUser('${uname}')">✕</button>`;
+    ul.appendChild(div);
+  });
 }
 
-async function clearLeaderboard() {
-  if (!confirm('Clear all player data and scores?')) return;
-  if (isFirebaseReady && db) {
-    await window._fb.set(window._fb.ref(db, 'players'), null);
-    await window._fb.set(window._fb.ref(db, 'submissions'), null);
-  } else {
-    localState.players = {};
-    localState.submissions = [];
-    renderAdmin();
-    renderLeaderboard();
-    document.getElementById('historyList').querySelectorAll('.history-item').forEach(e=>e.remove());
-    document.getElementById('historyEmpty').style.display = 'block';
-    document.getElementById('histScore').style.display = 'none';
-  }
+function deleteUser(uname) {
+  if (!confirm('Remove user '+uname+'?')) return;
+  delete db.users[uname];
+  delete db.players[uname];
+  db.submissions = db.submissions.filter(s => s.player !== uname);
+  renderUserList();
+  renderLeaderboard();
 }
 
-async function clearAllData() {
-  if (!confirm('RESET EVERYTHING? This cannot be undone.')) return;
-  if (isFirebaseReady && db) {
-    await window._fb.set(window._fb.ref(db, 'players'), null);
-    await window._fb.set(window._fb.ref(db, 'submissions'), null);
-  } else {
-    localState.players = {};
-    localState.submissions = [];
-    renderAdmin();
-  }
+/* ── DANGER ── */
+function clearLeaderboard() {
+  if (!confirm('Clear all scores and submissions?')) return;
+  Object.keys(db.players).forEach(k => { db.players[k].score=0; db.players[k].flags=[]; db.players[k].flagged={}; });
+  Object.keys(db.users).forEach(k => { db.users[k].score=0; });
+  db.submissions = [];
+  renderLeaderboard();
+  renderUserList();
 }
 
-// expose for inline onclick
-window._deleteFlag = deleteFlag;
-window.addFlag = addFlag;
-window.clearLeaderboard = clearLeaderboard;
-window.clearAllData = clearAllData;
-window.unlockAdmin = unlockAdmin;
-window.submitFlag = submitFlag;
-window.switchTab = switchTab;
-window.onNameChange = onNameChange;
+function clearAllData() {
+  if (!confirm('RESET EVERYTHING including all users?')) return;
+  db.users = {}; db.players = {}; db.submissions = [];
+  renderLeaderboard(); renderUserList();
+}
 
-initFirebase();
-updateLbStats();
+/* ── TOAST ── */
+function toast(id, msg, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'toast '+type;
+  el.innerHTML = (type==='success'?'✓ ':type==='error'?'✗ ':'ℹ ')+msg;
+  setTimeout(()=>{el.style.display='none';el.className='toast';},3200);
+}
 </script>
 </body>
 </html>
